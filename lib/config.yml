@@ -1,0 +1,78 @@
+banknotes:
+  uah:
+    500: 4
+    200: 5
+    100: 12
+    50: 1
+    20: 2
+    10: 4
+    5: 1
+    2: 0
+    1: 2
+  usd:
+    500: 0
+    200: 0
+    100: 0
+    50: 0
+    20: 0
+    10: 0
+    5: 0
+    2: 0
+    1: 0
+users:
+  3321:
+    name: 'Volodymyr'
+    password: 'mypass'
+  5922:
+    name: 'Iryna'
+    password: 'ho#ll_§1'
+  6128:
+    name: 'Bohdan'
+    password: 'p1v0rakru1eZZ!'
+accounts:
+  123:
+    currency: :uah
+    balance: 15578
+    user_id: 3321
+  124:
+    currency: :usd
+    balance: 143
+    user_id: 3321
+  136:
+    currency: :uah
+    balance: 2567
+    user_id: 5922
+  137:
+    currency: :usd
+    balance: 6531
+    user_id: 5922
+  156:
+    currency: :uah
+    balance: 100
+    user_id: 6128
+  157:
+    currency: :usd
+    balance: 0
+    user_id: 6128
+deposits:
+  1:
+    amount: 15878
+    account_id: 123
+  2:
+    amount: 143
+    account_id: 124
+  3:
+    amount: 2567
+    account_id: 136
+  4:
+    amount: 6531
+    account_id: 137
+witdraws:
+  1:
+    amount: 200
+    account_id: 123
+transfers:
+  1:
+    amount: 100
+    source_account: 123
+    target_account: 156
