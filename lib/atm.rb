@@ -3,12 +3,22 @@ require 'yaml'
 
 config = YAML.load_file(ARGV.first || 'config.yml')
 
+# Module for methods
+module DataModelBehavior
+  def auto_id
+    @id ||= 0
+    @id += 1
+  end
+end
+
 # Transactions
 class Transaction
   # Transaction class defined as
   # father class for different types
   # of bank transactions like
   # deposits, transfers, withdrawals
+  include DataModelBehavior
+
   attr_accessor :currency, :amount
 
   def initialize(currency, amount)
@@ -17,10 +27,6 @@ class Transaction
   end
 
   # TODO
-  def transaction_id
-    @id ||= 0
-    @id += 1
-  end
 end
 
 # Transfers
@@ -38,7 +44,7 @@ class Transfer < Transaction
 
   def initialize(source_account, target_account)
     super
-    @transfer_id    = transaction_id
+    @transfer_id    = auto_id
     @source_account = source_account
     @target_account = target_account
   end
@@ -63,7 +69,7 @@ class Deposit < Transaction
 
   def initialize(account_id)
     super
-    @deposit_id = transaction_id
+    @deposit_id = auto_id
     @account_id = account_id
   end
 
@@ -87,7 +93,7 @@ class Withdrawal < Transaction
 
   def initialize(account_id)
     super
-    @withdrawal_id = transaction_id
+    @withdrawal_id = auto_id
     @account_id    = account_id
   end
 
@@ -104,9 +110,12 @@ class Currency
   # currencies and currency rates
   # and give interfaces for exchange
   # money in one currency to another
+  include DataModelBehavior
+
   attr_accessor :currency_name, :currency_uah_rate
 
   def initialize(currency_name, currency_uah_rate)
+    @currency_id       = auto_id
     @currency_name     = currency_name
     @currency_uah_rate = currency_uah_rate
   end
