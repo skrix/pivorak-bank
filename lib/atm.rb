@@ -3,119 +3,157 @@ require 'yaml'
 
 config = YAML.load_file(ARGV.first || 'config.yml')
 
-module Transactions
-  class Transfers
-    attr_accessor :currency, :amount, :source_account, :target_account
+# Transactions
+class Transactions
+  # Transactions class defined as
+  # father class for different types
+  # of bank transactions like
+  # deposits, transfers, withdrawals
+  attr_accessor :currency, :amount
 
-    def initialize(currency, amount, source_account, target_account)
-      @currency = currency
-      @amount = amount
-      @source_account = source_account
-      @target_account = target_account
-    end
-
-    def transfer(currency, amount, source_account, target_account)
-      
-    end
-  end
-
-  class Deposits
-    attr_accessor :currency, :amount, :account_id
-
-    def initialize(currency, amount, account_id)
-      @currency = currency
-      @amount = amount
-      @account_id = account_id
-    end
-
-    def deposit(currency, amount, account_id)
-      
-    end
-  end
-
-  class Withdrawals
-    attr_accessor :currency, :amount, :account_id
-
-    def initialize(currency, amount, account_id)
-      @currency = currency
-      @amount = amount
-      @account_id = account_id
-    end
-
-    def withdraw(currency, amount, account_id)
-      
-    end
-
-
-  # def withdraw(id)
-  #   puts 'Enter Amount You Wish to Withdraw:'
-  #   amount = gets.chomp.to_i
-  #   check_withdraw amount, id
-
-  #   old = @data['accounts'][id]['balance']
-  #   @data['accounts'][id]['balance'] = old - amount
-  #   x = @data['accounts'][id]['balance']
-
-  #   puts "Your New Balance is \u20B4 #{x}"
-  #   menu id
-  # end
-
-  # def check_withdraw(amount, id)
-  #   if amount > @data['accounts'][id]['balance']
-  #     puts 'ERROR: INSUFFICIENT FUNDS!! PLEASE ENTER A DIFFERENT AMOUNT:'
-  #     amount = gets.chomp.to_i
-  #     check_withdraw amount, id
-  #   end
-
-  #   if amount > total
-  #     puts "ERROR: THE MAXIMUM AMOUNT AVAILABLE IN THIS ATM IS \u20B4 #{total}. PLEASE ENTER A DIFFERENT AMOUNT:"
-  #     amount = gets.chomp.to_i
-  #     check_withdraw amount, id
-  #   end
-
-  #   if amount <= total
-  #     unless possible amount
-  #       puts 'ERROR: THE AMOUNT YOU REQUESTED CANNOT BE COMPOSED FROM BILLS \
-  #       AVAILABLE IN THIS ATM. PLEASE ENTER A DIFFERENT AMOUNT:'
-  #       amount = gets.chomp.to_i
-  #       check_withdraw amount, id
-  #     end
-  #   end
-  # end
-
-  # def total
-  #   total = 0
-  #   for key in @data['banknotes'].keys
-  #     total += @data['banknotes'][key] * key
-  #   end
-  #   total
-  # end
-
-  # def possible(summ)
-  #   list_keys = @data['banknotes'].keys.sort.reverse
-  #   rest = summ
-  #   for x in list_keys
-  #     if @data['banknotes'][x] > 0
-  #       i = @data['banknotes'][x]
-  #       while rest >= x && i >= 0
-  #         rest -= x
-  #         i -= 1
-  #       end
-  #     else
-  #       next
-  #     end
-  #   end
-  #   if rest > 0
-  #     return false
-  #   else
-  #     return true
-  #   end
-  # end
-
+  def initialize(currency, amount)
+    @currency = currency
+    @amount = amount
   end
 end
 
+# Transfers
+class Transfers < Transactions
+  # Transfers class defined as
+  # child class of Transactions
+  # for save information about
+  # money transfers between users
+  # and give interfaces for
+  # make transfers in different
+  # currencys from one user to another
+  attr_accessor :currency, :amount, :source_account, :target_account
+
+  def initialize(source_account, target_account)
+    super
+    @source_account = source_account
+    @target_account = target_account
+  end
+
+  def transfer(currency, amount, source_account, target_account)
+    
+  end
+end
+
+# Deposits
+class Deposits < Transactions
+  # Deposits class defined as
+  # child class of Transactions
+  # for save information about
+  # deposits of bank users
+  # and give interfaces for
+  # make deposits in different
+  # currencys
+  attr_accessor :currency, :amount, :account_id
+
+  def initialize(account_id)
+    super
+    @account_id = account_id
+  end
+
+  def deposit(currency, amount, account_id)
+    
+  end
+end
+
+# Withdrawals
+class Withdrawals < Transactions
+  # Withdrawals class defined as
+  # child class of Transactions
+  # for save information about
+  # withdrawals of bank users
+  # and give interfaces for
+  # make withdrawals in different
+  # currencys
+  attr_accessor :currency, :amount, :account_id
+
+  def initialize(account_id)
+    super
+    @account_id = account_id
+  end
+
+  def withdraw(currency, amount, account_id)
+    
+  end
+
+# def withdraw(id)
+#   puts 'Enter Amount You Wish to Withdraw:'
+#   amount = gets.chomp.to_i
+#   check_withdraw amount, id
+
+#   old = @data['accounts'][id]['balance']
+#   @data['accounts'][id]['balance'] = old - amount
+#   x = @data['accounts'][id]['balance']
+
+#   puts "Your New Balance is \u20B4 #{x}"
+#   menu id
+# end
+
+# def check_withdraw(amount, id)
+#   if amount > @data['accounts'][id]['balance']
+#     puts 'ERROR: INSUFFICIENT FUNDS!! PLEASE ENTER A DIFFERENT AMOUNT:'
+#     amount = gets.chomp.to_i
+#     check_withdraw amount, id
+#   end
+
+#   if amount > total
+#     puts "ERROR: THE MAXIMUM AMOUNT AVAILABLE IN THIS ATM IS \u20B4 #{total}. PLEASE ENTER A DIFFERENT AMOUNT:"
+#     amount = gets.chomp.to_i
+#     check_withdraw amount, id
+#   end
+
+#   if amount <= total
+#     unless possible amount
+#       puts 'ERROR: THE AMOUNT YOU REQUESTED CANNOT BE COMPOSED FROM BILLS \
+#       AVAILABLE IN THIS ATM. PLEASE ENTER A DIFFERENT AMOUNT:'
+#       amount = gets.chomp.to_i
+#       check_withdraw amount, id
+#     end
+#   end
+# end
+
+# def total
+#   total = 0
+#   for key in @data['banknotes'].keys
+#     total += @data['banknotes'][key] * key
+#   end
+#   total
+# end
+
+# def possible(summ)
+#   list_keys = @data['banknotes'].keys.sort.reverse
+#   rest = summ
+#   for x in list_keys
+#     if @data['banknotes'][x] > 0
+#       i = @data['banknotes'][x]
+#       while rest >= x && i >= 0
+#         rest -= x
+#         i -= 1
+#       end
+#     else
+#       next
+#     end
+#   end
+#   if rest > 0
+#     return false
+#   else
+#     return true
+#   end
+# end
+
+end
+
+# Currencies
 class Currencies
+  # Currencies class defined for
+  # saving information about
+  # currencies and currency rates
+  # and give interfaces for exchange
+  # money in one currency to another
   attr_accessor :currency, :rate
 
   def initialize(currency, rate)
@@ -132,27 +170,45 @@ class Currencies
   end
 end
 
+# Accounts
 class Accounts
-  attr_accessor :currency, :balance, :account_id
+  # Accounts class defined for
+  # storing information about
+  # user's accounts with different
+  # currencies and amount of money
+  attr_accessor :currency, :balance, :account_id, :user_id
 
-  def initialize(currency, balance, account_id)
+  def initialize(currency, balance, user_id)
     @currency = currency
     @balance = balance
     @account_id = account_id
+    @user_id = user_id
   end
 end
 
+# Users
 class Users
-  attr_accessor :account_id, :user_name, :password
+  # Users class defined for
+  # storing information about
+  # users
+  attr_accessor :user_id, :user_name, :password
 
-  def initialize(account_id, user_name, password)
-    @account_id = account_id
+  def initialize(user_id, user_name, password)
+    @user_id = user_id
     @user_name = user_name
     @password = password
   end
 end
 
+# CashDispenser
 class CashDispenser
+  # CashDispenser class defined for
+  # storing information about
+  # banknotes avaliable in current
+  # cash dispenser in different
+  # currencies and provide interfaces
+  # for user login/logout and interactions
+  # with bank database and interfaces
   attr_accessor :banknotes
 
   def initialize(banknotes)
