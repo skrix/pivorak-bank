@@ -15,7 +15,12 @@ class Transaction
     @currency = currency
     @amount   = amount
   end
+
   # TODO
+  def transaction_id
+    @id ||= 0
+    @id += 1
+  end
 end
 
 # Transfers
@@ -27,10 +32,13 @@ class Transfer < Transaction
   # and give interfaces for
   # make transfers in different
   # currencys from one user to another
-  attr_accessor :currency, :amount, :source_account, :target_account
+  attr_accessor :currency, :amount
+  attr_accessor :source_account, :target_account
+  attr_accessor :transfer_id
 
   def initialize(source_account, target_account)
     super
+    @transfer_id    = transaction_id
     @source_account = source_account
     @target_account = target_account
   end
@@ -51,10 +59,11 @@ class Deposit < Transaction
   # make deposits in different
   # currencys
   attr_accessor :currency, :amount, :account_id
+  attr_accessor :deposit_id
 
-  def initialize(deposit_id)
+  def initialize(account_id)
     super
-    @deposit_id = deposit_id
+    @deposit_id = transaction_id
     @account_id = account_id
   end
 
@@ -74,10 +83,11 @@ class Withdrawal < Transaction
   # make withdrawals in different
   # currencys
   attr_accessor :currency, :amount, :account_id
+  attr_accessor :withdrawal_id
 
   def initialize(account_id)
     super
-    @withdrawal_id = withdrawal_id
+    @withdrawal_id = transaction_id
     @account_id    = account_id
   end
 
@@ -94,11 +104,11 @@ class Currency
   # currencies and currency rates
   # and give interfaces for exchange
   # money in one currency to another
-  attr_accessor :currency, :rate
+  attr_accessor :currency_name, :currency_uah_rate
 
-  def initialize(currency, rate)
-    @currency = currency
-    @rate     = rate
+  def initialize(currency_name, currency_uah_rate)
+    @currency_name     = currency_name
+    @currency_uah_rate = currency_uah_rate
   end
 
   def rates
