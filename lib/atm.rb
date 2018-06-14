@@ -15,6 +15,7 @@ class Transaction
     @currency = currency
     @amount   = amount
   end
+  # TODO
 end
 
 # Transfers
@@ -35,8 +36,9 @@ class Transfer < Transaction
   end
 
   def transfer(currency, amount, source_account, target_account)
-
+    # TODO
   end
+  # TODO
 end
 
 # Deposits
@@ -50,14 +52,16 @@ class Deposit < Transaction
   # currencys
   attr_accessor :currency, :amount, :account_id
 
-  def initialize(account_id)
+  def initialize(deposit_id)
     super
+    @deposit_id = deposit_id
     @account_id = account_id
   end
 
   def deposit(currency, amount, account_id)
-
+    # TODO
   end
+  # TODO
 end
 
 # Withdrawals
@@ -73,73 +77,14 @@ class Withdrawal < Transaction
 
   def initialize(account_id)
     super
-    @account_id = account_id
+    @withdrawal_id = withdrawal_id
+    @account_id    = account_id
   end
 
   def withdraw(currency, amount, account_id)
-    puts 'Enter Amount You Wish to Withdraw:'
-    amount = gets.chomp.to_i
-    check_withdraw amount, id
-
-    old = @data['accounts'][id]['balance']
-    @data['accounts'][id]['balance'] = old - amount
-    x = @data['accounts'][id]['balance']
-
-    puts "Your New Balance is \u20B4 #{x}"
+    # TODO
   end
-
-  # def check_withdraw(amount, id)
-  #   if amount > @data['accounts'][id]['balance']
-  #     puts 'ERROR: INSUFFICIENT FUNDS!! PLEASE ENTER A DIFFERENT AMOUNT:'
-  #     amount = gets.chomp.to_i
-  #     check_withdraw amount, id
-  #   end
-
-  #   if amount > total
-  #     puts "ERROR: THE MAXIMUM AMOUNT AVAILABLE IN THIS ATM IS \u20B4 #{total}. PLEASE ENTER A DIFFERENT AMOUNT:"
-  #     amount = gets.chomp.to_i
-  #     check_withdraw amount, id
-  #   end
-
-  #   if amount <= total
-  #     unless possible amount
-  #       puts 'ERROR: THE AMOUNT YOU REQUESTED CANNOT BE COMPOSED FROM BILLS \
-  #       AVAILABLE IN THIS ATM. PLEASE ENTER A DIFFERENT AMOUNT:'
-  #       amount = gets.chomp.to_i
-  #       check_withdraw amount, id
-  #     end
-  #   end
-  # end
-
-  # def total
-  #   total = 0
-  #   for key in @data['banknotes'].keys
-  #     total += @data['banknotes'][key] * key
-  #   end
-  #   total
-  # end
-
-  # def possible(summ)
-  #   list_keys = @data['banknotes'].keys.sort.reverse
-  #   rest = summ
-  #   for x in list_keys
-  #     if @data['banknotes'][x] > 0
-  #       i = @data['banknotes'][x]
-  #       while rest >= x && i >= 0
-  #         rest -= x
-  #         i -= 1
-  #       end
-  #     else
-  #       next
-  #     end
-  #   end
-  #   if rest > 0
-  #     return false
-  #   else
-  #     return true
-  #   end
-  # end
-
+  # TODO
 end
 
 # Currencies
@@ -157,12 +102,13 @@ class Currency
   end
 
   def rates
-
+    # TODO
   end
 
   def exchange(amount, from_currency, to_currency)
-
+    # TODO
   end
+  # TODO
 end
 
 # Accounts
@@ -179,6 +125,7 @@ class Account
     @account_id = account_id
     @user_id    = user_id
   end
+  # TODO
 end
 
 # Users
@@ -193,6 +140,25 @@ class User
     @user_name = user_name
     @password  = password
   end
+  # TODO
+end
+
+# BankDataBase
+class BankDataBase
+  # BankDataBase class defined for
+  # storing all information about
+  # users, accounts, transactions
+  attr_accessor :users, :accounts
+  attr_accessor :deposits, :witdraws, :transfers
+
+  def initialize(database = {})
+    @users     = database.fetch(:users)
+    @accounts  = database.fetch(:accounts)
+    @deposits  = database.fetch(:deposits, nil)
+    @witdraws  = database.fetch(:witdraws, nil)
+    @transfers = database.fetch(:transfers, nil)
+  end
+  # TODO
 end
 
 # CashDispenser
@@ -204,62 +170,28 @@ class CashDispenser
   # currencies and provide interfaces
   # for user login/logout and interactions
   # with bank database and interfaces
-  attr_accessor :banknotes, :users, :accounts
-  attr_accessor :deposits, :witdraws, :transfers
+  attr_accessor :banknotes
 
   def initialize(database = {})
     @banknotes = database.fetch(:banknotes)
-    @users     = database.fetch(:users)
-    @accounts  = database.fetch(:accounts)
-    @deposits  = database.fetch(:deposits, nil)
-    @witdraws  = database.fetch(:witdraws, nil)
-    @transfers = database.fetch(:transfers, nil)
   end
-
-  def login
-    puts 'Please Enter Your Personal ID:'
-    id = gets.chomp.to_i
-
-    if !@data['accounts'].key?(id)
-      puts "ERROR: ACCOUNT NUMBER DOESN'T EXIST"
-      return
-    else
-      puts 'Enter Your Password:'
-      password = gets.chomp
-      if password.eql? @data['accounts'][id]['password']
-        menu(id)
-      else
-        puts "ERROR: ACCOUNT NUMBER AND PASSWORD DON'T MATCH"
-        login
-      end
-    end
-  end
-
-  def balance(id)
-    x = @data['accounts'][id]['balance']
-    puts("Your Current Balance is \u20B4 #{x}")
-  end
-
-  def logout(id)
-    n = @data['accounts'][id]['name']
-    puts "#{n}, Thank You For Using Our ATM. Good-Bye!"
-    login
-  end
-
-  def menu(id)
-    n = @data['accounts'][id]['name']
-    puts "Hello, #{n}!\nPlease Choose From the Following Options:\n1. Display Balance\n2. Withdraw\n3. Log Out"
-
-    get = gets.chomp.to_i
-    case get
-    when 1
-      balance id
-    when 2
-      withdraw id
-    when 3
-      logout id
-    end
-  end
+  # TODO
 end
 
-Atm = CashDispenser.new config
+# InputHandler
+class InputHandler
+  # TODO
+  def initialize(args)
+    # TODO
+  end
+  # TODO
+end
+
+# Presenter
+class Presenter
+  # TODO
+  def initialize(args)
+    # TODO
+  end
+  # TODO
+end
