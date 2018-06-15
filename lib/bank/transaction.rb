@@ -12,9 +12,9 @@ class Transaction
 
   attr_accessor :currency, :amount
 
-  def initialize(currency, amount)
-    @currency = currency
-    @amount   = amount
+  def initialize(options = {})
+    @currency = options.fetch(:currency, :uah)
+    @amount   = options.fetch(:amount, 0)
   end
 
   # TODO

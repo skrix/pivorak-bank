@@ -11,9 +11,10 @@ class BankDataBase
   def initialize(database = {})
     @users     = database.fetch(:users)
     @accounts  = database.fetch(:accounts)
-    @deposits  = database.fetch(:deposits, nil)
-    @witdraws  = database.fetch(:witdraws, nil)
-    @transfers = database.fetch(:transfers, nil)
+    @deposits  = database.fetch(:deposits, 0)
+    @witdraws  = database.fetch(:witdraws, 0)
+    @transfers = database.fetch(:transfers, 0)
   end
   # TODO
+  # update and rewrite to file
 end

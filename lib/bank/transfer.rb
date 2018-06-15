@@ -11,15 +11,16 @@ require 'transaction'
 # make transfers in different
 # currencys from one user to another
 class Transfer < Transaction
-  attr_accessor :currency, :amount
+  attr_accessor :amount
   attr_accessor :source_account, :target_account
   attr_accessor :transfer_id
 
-  def initialize(source_account, target_account)
-    super
-    @transfer_id    = auto_id
-    @source_account = source_account
-    @target_account = target_account
+  def initialize(transfer_id, options = {})
+    super(options)
+    @transfer_id    = transfer_id
+    @source_account = options.fetch(:source_account)
+    @target_account = options.fetch(:target_account)
+    @amount         = options.fetch(:amount, 0)
   end
 
   def call

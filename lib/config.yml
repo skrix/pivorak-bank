@@ -67,7 +67,7 @@ deposits:
   4:
     amount: 6531
     account_id: 137
-witdraws:
+withdraws:
   1:
     amount: 200
     account_id: 123

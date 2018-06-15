@@ -2,3 +2,4 @@
 *.rbc
 *.xml
 .gitlab-ci.yml
+text_tmp.rb

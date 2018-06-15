@@ -11,13 +11,13 @@ require 'transaction'
 # make deposits in different
 # currencys
 class Deposit < Transaction
-  attr_accessor :currency, :amount, :account_id
+  attr_accessor :amount, :account_id
   attr_accessor :deposit_id
 
-  def initialize(account_id)
-    super
-    @deposit_id = auto_id
-    @account_id = account_id
+  def initialize(deposit_id, options = {})
+    super(options)
+    @deposit_id = deposit_id
+    @account_id = options.fetch(:account_id)
   end
 
   def call

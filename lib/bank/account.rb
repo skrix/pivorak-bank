@@ -8,11 +8,18 @@
 class Account
   attr_accessor :currency, :balance, :account_id, :user_id
 
-  def initialize(currency, balance, user_id)
-    @currency   = currency
-    @balance    = balance
+  def initialize(account_id, options = {})
     @account_id = account_id
-    @user_id    = user_id
+    @currency   = options.fetch(:currency, :uah)
+    @balance    = options.fetch(:balance, 0)
+    @user_id    = options.fetch(:user_id)
   end
-  # TODO
+
+  def sub_funds(amount)
+    @balance -= amount
+  end
+
+  def add_funds(amount)
+    @balance += amount
+  end
 end
