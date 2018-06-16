@@ -1,5 +1,4 @@
 *.gem
 *.rbc
 *.xml
-.gitlab-ci.yml
-text_tmp.rb
+text_tmp.md
