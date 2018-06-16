@@ -5,9 +5,12 @@ require 'bank_data_base'
 require 'cash_dispenser'
 require 'errors_out'
 require 'user'
+require 'questions'
 
 # presenter.rb
 class Presenter
+  include 'Questions'
+
   attr_accessor :database, :stream, :atm, :user
 
   def initialize(config = {})
@@ -46,16 +49,6 @@ class Presenter
     login
   end
 
-  def ask_id
-    stream.print_output('Please Enter Your Personal ID:')
-    stream.read_input
-  end
-
-  def ask_password
-    stream.print_output('Enter Your Password:')
-    stream.read_input
-  end
-
   def check_id_exist(user_id)
     database.users.key?(user_id)
   end
@@ -79,7 +72,7 @@ class Presenter
   def menu_choose_action
     choose = stream.read_input
     case choose
-    when 1  then  balance
+    when 1  then  show_balance
     when 2  then  deposit
     when 3  then  withdraw
     when 4  then  transfer
@@ -87,8 +80,20 @@ class Presenter
     end
   end
 
-  def balance
-    
+  def show_balance
+    user_balance = current_user_balance_hash
+    current_balance_info(user_balance)
+  end
+
+  def current_user_balance_hash(user_balance = {})
+    database.accounts.keys.each do |account|
+      current_id = database.accounts[account].fetch('user_id')
+      if current_id.eql? @user.user_id
+        currency = database.accounts[account]['currency']
+        user_balance[currency] += database.accounts[account]['balance']
+      end
+    end
+    user_balance
   end
 
   def deposit
@@ -108,57 +113,22 @@ class Presenter
 
   def logout
     stream.print_output("#{@user.user_name}, Thank You For Using Our ATM. Good-Bye!")
-    delete_user
     login
-  end
-
-  def delete_user
-    @user = nil
   end
 
   def create_user_by_id(user_id)
     @user = User.new(user_id, database.users[user_id][:name], database.users[user_id][:password])
   end
 
-  def ask_deposit_amount
-    stream.print_output('Enter Amount You Wish to Deposit:')
-    stream.read_input
-  end
-
-  def ask_withdraw_amount
-    stream.print_output('Enter Amount You Wish to Withdraw:')
-    stream.read_input
-  end
-
-  def ask_transfer_receiver
-    stream.print_output('Please enter receiver name:')
-    stream.read_input
-  end
-
-  def ask_amount
-    stream.print_output('Please enter amount:')
-    stream.read_input
-  end
-
-  def ask_currency
-    stream.print_output("Please select currency:\n\
-                         1. UAH\n\
-                         2. USD\n")
-    choose = stream.read_input
-    case choose
-    when 1 then :uah
-    when 2 then :usd
-  end
-
-  def new_balance_info(uah_amount, usd_amount = nil)
+  def new_balance_info(balance = {})
     if usd_amount.nil?
-      "Your New Balance is #{uah_amount} UAH"
+      "Your New Balance is #{balance[:uah]} UAH"
     else
-      "Your New Balance is #{uah_amount} UAH, #{usd_amount} USD"
+      "Your New Balance is #{balance[:usd]} UAH, #{usd_amount} USD"
     end
   end
 
-  def current_balance_info(uah_amount, usd_amount = 0)
-    "Your Current Balance is #{uah_amount} UAH, #{usd_amount} USD"
+  def current_balance_info(balance = {})
+    "Your Current Balance is #{balance[:uah]} UAH, #{balance[:usd]} USD"
   end
 end

@@ -9,11 +9,11 @@ class BankDataBase
   attr_accessor :deposits, :witdraws, :transfers
 
   def initialize(database = {})
-    @users     = database.fetch(:users)
-    @accounts  = database.fetch(:accounts)
-    @deposits  = database.fetch(:deposits, 0)
-    @witdraws  = database.fetch(:witdraws, 0)
-    @transfers = database.fetch(:transfers, 0)
+    @users     = database.fetch('users')
+    @accounts  = database.fetch('accounts')
+    @deposits  = database.fetch('deposits', 0)
+    @witdraws  = database.fetch('witdraws', 0)
+    @transfers = database.fetch('transfers', 0)
   end
   # TODO
   # update and rewrite to file

@@ -12,7 +12,7 @@ class CashDispenser
   attr_accessor :banknotes
 
   def initialize(database = {})
-    @banknotes = database.fetch(:banknotes)
+    @banknotes = database.fetch('banknotes')
   end
   # TODO
   # banknotes update add/remove
