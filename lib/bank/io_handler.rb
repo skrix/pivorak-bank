@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# input_output_handler.rb
+# io_handler.rb
 class InputOutputHandler
   def read_input
     STDIN.gets.chomp

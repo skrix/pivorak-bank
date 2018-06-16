@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'errors_out'
+
 # cash_dispenser.rb
 # CashDispenser class defined for
 # storing information about
@@ -13,15 +15,27 @@ class CashDispenser
 
   def initialize(database = {})
     @banknotes = database.fetch('banknotes')
+    @error     = ErrorsOut.new
   end
   # TODO
   # banknotes update add/remove
 
-  def withdraw(amount, _account_id, _currency = :uah)
+  def withdraw(amount, currency = 'uah')
     # TODO
-    compose(banknotes, amount_formatter(amount))
+    max_in_dispenser = total(banknotes[currency])
+    return error.over_the_limit(max_in_dispenser) if amount > max_in_dispenser
+    used_banknotes = compose(banknotes[currency], amount_formatter(amount))
+    @banknotes     = remainded_bills(banknotes[currency], used_banknotes)
   end
   # TODO
+
+  def total(bills)
+    total ||= 0
+    bills.each do |key, value|
+      total += key * value
+    end
+    total.to_i
+  end
 
   def remainded_bills(banknotes, used_banknotes)
     # give information about bills after withdrawal
@@ -41,7 +55,7 @@ class CashDispenser
     while banknotes_total(composed_bill) != amount
       arg_hash.delete(max_bill_in_hash(arg_hash))
       composed_bill = bill_greedy_compose(arg_hash, amount)
-      return ERROR if arg_hash == {}
+      return error.composing_error if arg_hash == {}
     end
 
     composed_bill

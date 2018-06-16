@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'transaction'
+require_relative 'transaction'
 
 # withdrawal.rb
 # Withdrawal class defined as

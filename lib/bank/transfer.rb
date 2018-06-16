@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'transaction'
+require_relative 'transaction'
 
 # transfers.rb
 # Transfer class defined as

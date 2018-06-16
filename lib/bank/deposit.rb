@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'transaction'
+require_relative 'transaction'
 
 # deposit.rb
 # Deposit class defined as
@@ -14,7 +14,7 @@ class Deposit < Transaction
   attr_accessor :amount, :account_id
   attr_accessor :deposit_id
 
-  def initialize(deposit_id, options = {})
+  def initialize(deposit_id = 1, options = {})
     super(options)
     @deposit_id = deposit_id
     @account_id = options.fetch(:account_id)

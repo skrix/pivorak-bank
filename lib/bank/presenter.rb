@@ -1,23 +1,23 @@
 # frozen_string_literal: true
 
-require 'input_output_handler'
-require 'bank_data_base'
-require 'cash_dispenser'
-require 'errors_out'
-require 'user'
-require 'questions'
+require_relative 'io_handler'
+require_relative 'bank_data_base'
+require_relative 'cash_dispenser'
+require_relative 'errors_out'
+require_relative 'user'
+require_relative 'questions'
 
 # presenter.rb
 class Presenter
-  include 'Questions'
+  include Questions
 
-  attr_accessor :database, :stream, :atm, :user
+  attr_accessor :database, :stream, :atm, :user, :error
 
   def initialize(config = {})
     # TODO
     @database = BankDataBase.new(config)
     @atm      = CashDispenser.new(config)
-    @stream   = InputHandler.new
+    @stream   = InputOutputHandler.new
     @error    = ErrorsOut.new
   end
 
@@ -29,7 +29,8 @@ class Presenter
 
   # TODO
   def login
-    user_id = ask_id
+    p database.users
+    user_id = ask_id.to_i
     if check_id_exist(user_id)
       password = ask_password
       check_password(user_id, password) ? login_succeed(user_id) : login_error(error.wrong_password)
@@ -50,12 +51,12 @@ class Presenter
   end
 
   def check_id_exist(user_id)
-    database.users.key?(user_id)
+    database.users.fetch(user_id)
   end
 
   def check_password(user_id, password)
-    database.users[user_id].fetch(:password)
-    database.users[user_id][:password] == password
+    database.users[user_id].fetch('password')
+    database.users[user_id]['password'] == password
   end
 
   def menu
@@ -71,7 +72,7 @@ class Presenter
 
   def menu_choose_action
     choose = stream.read_input
-    case choose
+    case choose.to_i
     when 1  then  show_balance
     when 2  then  deposit
     when 3  then  withdraw
@@ -83,13 +84,16 @@ class Presenter
   def show_balance
     user_balance = current_user_balance_hash
     current_balance_info(user_balance)
+    menu
   end
 
   def current_user_balance_hash(user_balance = {})
+    p database.accounts.keys
     database.accounts.keys.each do |account|
       current_id = database.accounts[account].fetch('user_id')
       if current_id.eql? @user.user_id
         currency = database.accounts[account]['currency']
+        user_balance[currency] ||= 0
         user_balance[currency] += database.accounts[account]['balance']
       end
     end
@@ -99,16 +103,20 @@ class Presenter
   def deposit
     amount   = ask_deposit_amount
     currency = ask_currency
+    menu
   end
 
   def withdraw
     amount   = ask_withdraw_amount
     currency = ask_currency
+    atm.withdraw(amount, currency)
+    menu
   end
 
   def transfer
     amount   = ask_amount
     currency = ask_currency
+    menu
   end
 
   def logout
@@ -117,18 +125,18 @@ class Presenter
   end
 
   def create_user_by_id(user_id)
-    @user = User.new(user_id, database.users[user_id][:name], database.users[user_id][:password])
+    @user = User.new(user_id, database.users[user_id]['name'], database.users[user_id]['password'])
   end
 
   def new_balance_info(balance = {})
-    if usd_amount.nil?
-      "Your New Balance is #{balance[:uah]} UAH"
+    if balance[:usd].nil?
+      stream.print_output("Your New Balance is #{balance[:uah]} UAH")
     else
-      "Your New Balance is #{balance[:usd]} UAH, #{usd_amount} USD"
+      stream.print_output("Your New Balance is #{balance[:usd]} UAH, #{balance[:usd]} USD")
     end
   end
 
   def current_balance_info(balance = {})
-    "Your Current Balance is #{balance[:uah]} UAH, #{balance[:usd]} USD"
+    stream.print_output("Your Current Balance is #{balance[:uah]} UAH, #{balance[:usd]} USD")
   end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'data_model_behavior'
+require_relative 'data_model_behavior'
 
 # transaction.rb
 # Transaction class defined as
