@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 
 require_relative 'io_handler'
-require_relative 'bank_database'
-require_relative 'cash_dispenser'
-require_relative 'user'
-require_relative 'questions'
+require_relative '../bank/bank_database'
+require_relative '../bank/cash_dispenser'
+require_relative '../bank/paydesk'
+require_relative '../bank/user'
+require_relative '../bank/deposit'
+require_relative '../bank/transfer'
+require_relative '../bank/withdrawal'
+require_relative '../bank/account'
+require_relative '../modules/questions'
 
 # presenter.rb
 class Presenter
@@ -13,9 +18,8 @@ class Presenter
   attr_accessor :database, :stream, :atm, :user
 
   def initialize(config = {})
-    # TODO
-    @database = BankDataBase.new(config)
-    @atm      = CashDispenser.new(config)
+    @database = BankDatabase.new(config)
+    @atm      = CashDispenser.new
     @stream   = InputOutputHandler.new
   end
 
@@ -62,9 +66,32 @@ class Presenter
   def deposit
     amount   = ask_deposit_amount
     currency = ask_currency
-    atm.deposit(amount, currency)
-    user.deposit(amount, currency)
+    make_deposit(user.user_id, amount, currency)
     menu
+  end
+
+  def make_deposit(user_id, amount, currency)
+    database.accounts.keys.each do |account_id|
+      user_owned = database.accounts[account_id]['user_id'].eql? user_id
+      proper_currency = database.accounts[account_id]['currency'].eql? currency
+
+      if user_owned && proper_currency
+        database.deposits_update(Deposit.new(new_deposit_id, account_id, amount).to_h)
+        upd_info = Account.new(account_id, database['accounts'][account_id]).add_funds(amount)
+        database.accounts_update(upd_info.to_h)
+        upd_bills = Hash[currency => { 1 => amount }]
+        database.banknotes_update(upd_bills)
+      end
+    end
+    balance_after_transaction
+  end
+
+  def new_deposit_id
+    if database.deposits.keys[-1].nil?
+      1
+    else
+      database.deposits.keys[-1] + 1
+    end
   end
 
   def withdraw
@@ -72,6 +99,30 @@ class Presenter
     currency = ask_currency
     stream.print_output(atm.withdraw(amount, currency))
     menu
+  end
+
+  def make_withdraw(user_id, amount, currency)
+    database.accounts.keys.each do |account_id|
+      user_owned = database.accounts[account_id]['user_id'].eql? user_id
+      proper_currency = database.accounts[account_id]['currency'].eql? currency
+
+      if user_owned && proper_currency
+        database.withdraws_update(Withdrawal.new(new_withdraw_id, account_id, amount).to_h)
+        upd_info = Account.new(account_id, database['accounts'][account_id]).sub_funds(amount)
+        database.accounts_update(upd_info.to_h)
+        upd_bills = Paydesk.new(database.banknotes, amount)
+        database.banknotes_update(upd_bills)
+      end
+    end
+    balance_after_transaction
+  end
+
+  def new_withdraw_id
+    if database.withdraws.keys[-1].nil?
+      1
+    else
+      database.withdraws.keys[-1] + 1
+    end
   end
 
   def transfer
@@ -104,5 +155,38 @@ class Presenter
     when 4  then  transfer
     when 5  then  logout
     end
+  end
+
+  def show_balance
+    user_balance = current_user_balance_hash
+    current_balance_info(user_balance)
+    menu
+  end
+
+  def balance_after_transaction
+    user_balance = current_user_balance_hash
+    new_balance_info(user_balance)
+    menu
+  end
+
+  def current_user_balance_hash
+    database.accounts.keys.each do |account|
+      current_id = database.accounts[account].fetch('user_id')
+
+      if current_id.eql? user.user_id
+        currency = database.accounts[account]['currency']
+        user_balance[currency] ||= 0
+        user_balance[currency] += database.accounts[account]['balance']
+      end
+    end
+    user_balance
+  end
+
+  def new_balance_info(balance = {})
+    stream.print_output("Your New Balance is #{balance[:usd]} UAH, #{balance[:usd]} USD")
+  end
+
+  def current_balance_info(balance = {})
+    stream.print_output("Your Current Balance is #{balance[:uah]} UAH, #{balance[:usd]} USD")
   end
 end

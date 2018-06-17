@@ -6,12 +6,9 @@
 # of bank transactions like
 # deposits, transfers, withdrawals
 class Transaction
-  attr_accessor :currency, :amount
+  attr_accessor :amount
 
-  def initialize(options = {})
-    @currency = options.fetch(:currency, :uah)
-    @amount   = options.fetch(:amount, 0)
+  def initialize(amount)
+    @amount = amount
   end
-
-  # TODO
 end

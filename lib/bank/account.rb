@@ -22,4 +22,12 @@ class Account
   def add_funds(amount)
     @balance += amount
   end
+
+  def to_h
+    Hash[ account_id => {
+      'currency' => currency,
+      'balance'  => balance,
+      'user_id'  => user_id
+    }]
+  end
 end

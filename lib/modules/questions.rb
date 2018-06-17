@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'io_handler'
+require_relative '../system/io_handler'
 
 module Questions
   def ask_id

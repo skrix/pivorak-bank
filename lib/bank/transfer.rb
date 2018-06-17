@@ -20,8 +20,14 @@ class Transfer < Transaction
     @transfer_id    = transfer_id
     @source_account = options.fetch(:source_account)
     @target_account = options.fetch(:target_account)
-    @amount         = options.fetch(:amount, 0)
   end
 
   # TODO
+  def to_h
+    Hash[ transfer_id => {
+      'amount'         => amount,
+      'source_account' => source_account,
+      'target_account' => target_account
+    }]
+  end
 end

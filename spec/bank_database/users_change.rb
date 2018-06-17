@@ -3,7 +3,7 @@
 require 'yaml'
 require './lib/bank/bank_database'
 
-describe BankDataBase do
+describe BankDatabase do
   let!(:config) { YAML.load_file('./lib/config.yml') }
   let!(:user) do
     {

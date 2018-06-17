@@ -14,11 +14,16 @@ class Deposit < Transaction
   attr_accessor :amount, :account_id
   attr_accessor :deposit_id
 
-  def initialize(deposit_id = 1, options = {})
-    super(options)
+  def initialize(deposit_id, account_id, amount)
+    super(amount)
     @deposit_id = deposit_id
-    @account_id = options.fetch(:account_id)
+    @account_id = account_id
   end
 
-  # TODO
+  def to_h
+    Hash[ deposit_id => {
+      'amount'     => amount,
+      'account_id' => account_id
+    }]
+  end
 end

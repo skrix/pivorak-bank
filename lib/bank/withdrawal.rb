@@ -11,17 +11,18 @@ require_relative 'transaction'
 # make withdrawals in different
 # currencies
 class Withdrawal < Transaction
-  attr_accessor :amount, :account_id
-  attr_accessor :withdrawal_id
+  attr_accessor :account_id, :withdrawal_id
 
-  def initialize(withdrawal_id, options = {})
-    super(options)
+  def initialize(withdrawal_id, account_id, amount)
+    super(amount)
     @withdrawal_id = withdrawal_id
-    @account_id    = options.fetch(:account_id)
-    @amount        = options.fetch(:amount, 0)
+    @account_id    = account_id
   end
 
-  def call
-    # TODO
+  def to_h
+    Hash[ withdrawal_id => {
+      'amount'     => amount,
+      'account_id' => account_id
+    }]
   end
 end

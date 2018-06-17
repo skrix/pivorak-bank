@@ -3,10 +3,10 @@
 require 'yaml'
 
 # bank_data_base.rb
-# BankDataBase class defined for
+# BankDatabase class defined for
 # storing all information about
 # users, accounts, transactions
-class BankDataBase
+class BankDatabase
   attr_reader :users,    :accounts, :banknotes
   attr_reader :deposits, :withdraws, :transfers
 

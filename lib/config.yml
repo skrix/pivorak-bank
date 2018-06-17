@@ -31,7 +31,7 @@ users:
     password: 'p1v0rakru1eZZ!'
 accounts:
   123:
-    currency: :uah
+    currency: 'uah'
     balance: 15578
     user_id: 3321
   124:
@@ -39,19 +39,19 @@ accounts:
     balance: 143
     user_id: 3321
   136:
-    currency: :uah
+    currency: 'uah'
     balance: 2567
     user_id: 5922
   137:
-    currency: :usd
+    currency: 'usd'
     balance: 6531
     user_id: 5922
   156:
-    currency: :uah
+    currency: 'uah'
     balance: 100
     user_id: 6128
   157:
-    currency: :usd
+    currency: 'usd'
     balance: 0
     user_id: 6128
 deposits:
