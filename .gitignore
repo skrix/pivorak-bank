@@ -1,5 +1,5 @@
+spec/
 *.gem
 *.rbc
 *.xml
 text_tmp.md
-/spec/*

@@ -118,12 +118,13 @@ class Presenter
         if upd_bills.nil?
           stream.print_output(error.composing_error)
           withdraw
+        else
+          database.withdraws_update(Withdrawal.new(new_withdraw_id, account_id, amount).to_h)
+          upd_info = Account.new(account_id, database.accounts[account_id])
+          upd_info.sub_funds(amount)
+          database.accounts_update(upd_info.to_h)
+          database.banknotes_update(currency, upd_bills)
         end
-        database.withdraws_update(Withdrawal.new(new_withdraw_id, account_id, amount).to_h)
-        upd_info = Account.new(account_id, database.accounts[account_id])
-        upd_info.sub_funds(amount)
-        database.accounts_update(upd_info.to_h)
-        database.banknotes_update(currency, upd_bills)
       else
         next
       end
@@ -140,15 +141,16 @@ class Presenter
   end
 
   def transfer
-    amount   = ask_amount
-    currency = ask_currency
-    receiver = ask_transfer_receiver
-    target   = check_receiver(receiver)
-    if target.nil?
+    amount      = ask_amount
+    currency    = ask_currency
+    target_user = check_receiver(ask_transfer_receiver)
+    if target_user.nil?
       stream.print_output(error.transfer_error)
       return
     end
-    make_transfer(target, user.user_id, amount, currency)
+    target = user_account(target_user, currency)
+    source = user_account(user.user_id, currency)
+    make_transfer(target, source, amount)
     menu
   end
 
@@ -157,16 +159,26 @@ class Presenter
     database.users.keys.each do |id|
       target_user_id = id if database.users[id]['name'] == user_name
     end
-    return nil if target_user_id.nil?
+    target_user_id
+  end
 
+  def user_account(user_id, currency)
     database.accounts.keys.each do |account|
-      return account if database.accounts[account]['user_id'] == target_user_id
+      correct_user     = database.accounts[account]['user_id']  == user_id
+      correct_currency = database.accounts[account]['currency'] == currency
+      return account if correct_user && correct_currency
     end
     nil
   end
 
-  def make_transfer(target_id, source_id, amount, currency)
-    
+  def make_transfer(target_id, source_id, amount)
+    target = Account.new(target_id, database.accounts.fetch(target_id))
+    source = Account.new(source_id, database.accounts.fetch(source_id))
+    target.add_funds(amount)
+    source.sub_funds(amount)
+    database.accounts_update(source.to_h)
+    database.accounts_update(target.to_h)
+    balance_after_transaction
   end
 
   def logout
