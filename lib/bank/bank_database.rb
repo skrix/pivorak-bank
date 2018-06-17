@@ -25,8 +25,8 @@ class BankDatabase
          'withdraws' => withdraws, 'transfers' => transfers]
   end
 
-  def banknotes_update(options)
-    @banknotes.merge!(options)
+  def banknotes_update(currency, options)
+    @banknotes.fetch(currency).merge!(options)
   end
 
   def users_update(options)

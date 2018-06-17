@@ -78,12 +78,13 @@ class Presenter
       proper_currency = database.accounts[account_id]['currency'].eql? currency
 
       if user_owned && proper_currency
+        p database.banknotes[currency]
         database.deposits_update(Deposit.new(new_deposit_id, account_id, amount).to_h)
         upd_info = Account.new(account_id, database.accounts[account_id])
         upd_info.add_funds(amount)
         database.accounts_update(upd_info.to_h)
-        upd_bills = Hash[currency => { 1 => amount }]
-        database.banknotes_update(upd_bills)
+        upd_bills = { 1 => amount }
+        database.banknotes_update(currency, upd_bills)
       end
       next
     end
@@ -111,17 +112,20 @@ class Presenter
       proper_currency = database.accounts[account_id]['currency'].eql? currency
 
       if user_owned && proper_currency
+        p database.banknotes[currency]
+
+        upd_bills = Paydesk.new(database.banknotes[currency], amount).call
+        if upd_bills.nil?
+          stream.print_output(error.composing_error)
+          withdraw
+        end
         database.withdraws_update(Withdrawal.new(new_withdraw_id, account_id, amount).to_h)
         upd_info = Account.new(account_id, database.accounts[account_id])
         upd_info.sub_funds(amount)
         database.accounts_update(upd_info.to_h)
-        p database.banknotes[currency]
-        upd_bills = Paydesk.new(database.banknotes[currency], amount).call
-        if upd_bills.nil?
-          error.composing_error
-          withdraw
-        end
-        database.banknotes_update(upd_bills)
+        database.banknotes_update(currency, upd_bills)
+      else
+        next
       end
     end
     balance_after_transaction
