@@ -9,9 +9,6 @@
 # for user login/logout and interactions
 # with bank database and interfaces
 class CashDispenser
-  attr_accessor :banknotes
-
-  def initialize(database = {})
-    @banknotes = database.fetch('banknotes')
+  def initialize()
   end
 end

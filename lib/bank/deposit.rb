@@ -20,14 +20,5 @@ class Deposit < Transaction
     @account_id = options.fetch(:account_id)
   end
 
-  def call
-    # TODO
-  end
-
-  private
-
-  def deposit(currency, amount, account_id)
-    # TODO
-  end
   # TODO
 end

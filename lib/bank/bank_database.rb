@@ -8,44 +8,44 @@ require 'yaml'
 # users, accounts, transactions
 class BankDataBase
   attr_reader :users,    :accounts, :banknotes
-  attr_reader :deposits, :witdraws, :transfers
+  attr_reader :deposits, :withdraws, :transfers
 
   def initialize(database = {})
     @banknotes = database.fetch('banknotes')
     @users     = database.fetch('users')
     @accounts  = database.fetch('accounts')
     @deposits  = database.fetch('deposits', {})
-    @witdraws  = database.fetch('witdraws', {})
+    @withdraws = database.fetch('withdraws', {})
     @transfers = database.fetch('transfers', {})
   end
 
   def to_h
     Hash['banknotes' => banknotes, 'users' => users,
          'accounts' => accounts, 'deposits' => deposits,
-         'witdraws' => witdraws, 'transfers' => transfers]
+         'withdraws' => withdraws, 'transfers' => transfers]
   end
 
-  def banknotes=(options)
-    banknotes.merge!(options)
+  def banknotes_update(options)
+    @banknotes.merge!(options)
   end
 
-  def users=(options)
-    users.merge!(options)
+  def users_update(options)
+    @users.merge!(options)
   end
 
-  def accounts=(options)
-    accounts.merge!(options)
+  def accounts_update(options)
+    @accounts.merge!(options)
   end
 
-  def deposits=(options)
+  def deposits_update(options)
     deposits.merge!(options)
   end
 
-  def witdraws=(options)
-    witdraws.merge!(options)
+  def withdraws_update(options)
+    withdraws.merge!(options)
   end
 
-  def transfers=(options)
+  def transfers_update(options)
     transfers.merge!(options)
   end
 

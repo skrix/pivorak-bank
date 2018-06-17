@@ -23,14 +23,5 @@ class Transfer < Transaction
     @amount         = options.fetch(:amount, 0)
   end
 
-  def call
-    # TODO
-  end
-
-  private
-
-  def transfer(currency, amount, source_account, target_account)
-    # TODO
-  end
   # TODO
 end

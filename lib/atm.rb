@@ -3,7 +3,7 @@
 CONFIG = 'config.yml'
 
 require 'yaml'
-require './bank/presenter'
+require './system/presenter'
 
 config = YAML.load_file(ARGV.first || CONFIG)
 runtime = Presenter.new(config)
