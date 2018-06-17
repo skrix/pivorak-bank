@@ -140,9 +140,33 @@ class Presenter
   end
 
   def transfer
-    # amount   = ask_amount
-    # currency = ask_currency
+    amount   = ask_amount
+    currency = ask_currency
+    receiver = ask_transfer_receiver
+    target   = check_receiver(receiver)
+    if target.nil?
+      stream.print_output(error.transfer_error)
+      return
+    end
+    make_transfer(target, user.user_id, amount, currency)
     menu
+  end
+
+  def check_receiver(user_name)
+    target_user_id = nil
+    database.users.keys.each do |id|
+      target_user_id = id if database.users[id]['name'] == user_name
+    end
+    return nil if target_user_id.nil?
+
+    database.accounts.keys.each do |account|
+      return account if database.accounts[account]['user_id'] == target_user_id
+    end
+    nil
+  end
+
+  def make_transfer(target_id, source_id, amount, currency)
+    
   end
 
   def logout

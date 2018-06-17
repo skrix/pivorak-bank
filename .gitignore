@@ -2,3 +2,4 @@
 *.rbc
 *.xml
 text_tmp.md
+/spec/*
