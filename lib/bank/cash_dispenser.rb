@@ -9,6 +9,5 @@
 # for user login/logout and interactions
 # with bank database and interfaces
 class CashDispenser
-  def initialize()
-  end
+  def initialize(); end
 end

@@ -75,8 +75,8 @@ class Presenter
   end
 
   def transfer
-    amount   = ask_amount
-    currency = ask_currency
+    # amount   = ask_amount
+    # currency = ask_currency
     menu
   end
 
