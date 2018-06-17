@@ -16,7 +16,7 @@ require_relative '../modules/errors_out'
 class Presenter
   include Questions
 
-  attr_accessor :database, :stream, :atm, :user
+  attr_accessor :database, :stream, :atm, :user, :error
 
   def initialize(config = {})
     @database = BankDatabase.new(config)
@@ -85,6 +85,7 @@ class Presenter
         upd_bills = Hash[currency => { 1 => amount }]
         database.banknotes_update(upd_bills)
       end
+      next
     end
     balance_after_transaction
   end
@@ -114,6 +115,7 @@ class Presenter
         upd_info = Account.new(account_id, database.accounts[account_id])
         upd_info.sub_funds(amount)
         database.accounts_update(upd_info.to_h)
+        p database.banknotes[currency]
         upd_bills = Paydesk.new(database.banknotes[currency], amount).call
         if upd_bills.nil?
           error.composing_error
