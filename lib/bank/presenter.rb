@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 require_relative 'io_handler'
-require_relative 'bank_data_base'
+require_relative 'bank_database'
 require_relative 'cash_dispenser'
-require_relative 'errors_out'
 require_relative 'user'
 require_relative 'questions'
 
@@ -11,14 +10,13 @@ require_relative 'questions'
 class Presenter
   include Questions
 
-  attr_accessor :database, :stream, :atm, :user, :error
+  attr_accessor :database, :stream, :atm, :user
 
   def initialize(config = {})
     # TODO
     @database = BankDataBase.new(config)
     @atm      = CashDispenser.new(config)
     @stream   = InputOutputHandler.new
-    @error    = ErrorsOut.new
   end
 
   def call
@@ -27,9 +25,7 @@ class Presenter
 
   private
 
-  # TODO
   def login
-    p database.users
     user_id = ask_id.to_i
     if check_id_exist(user_id)
       password = ask_password
@@ -59,9 +55,38 @@ class Presenter
     database.users[user_id]['password'] == password
   end
 
+  def create_user_by_id(user_id)
+    @user = User.new(user_id, database.config)
+  end
+
+  def deposit
+    amount   = ask_deposit_amount
+    currency = ask_currency
+    atm.deposit(amount, currency)
+    user.deposit(amount, currency)
+    menu
+  end
+
+  def withdraw
+    amount   = ask_withdraw_amount
+    currency = ask_currency
+    stream.print_output(atm.withdraw(amount, currency))
+    menu
+  end
+
+  def transfer
+    amount   = ask_amount
+    currency = ask_currency
+    menu
+  end
+
+  def logout
+    stream.print_output("#{@user.user_name}, Thank You For Using Our ATM. Good-Bye!")
+    login
+  end
+
   def menu
-    stream.print_output("\
-    Please Choose From the Following Options:\n\
+    stream.print_output("Please Choose From the Following Options:\n\
     1. Display Balance\n\
     2. Deposit\n\
     3. Withdraw\n\
@@ -79,64 +104,5 @@ class Presenter
     when 4  then  transfer
     when 5  then  logout
     end
-  end
-
-  def show_balance
-    user_balance = current_user_balance_hash
-    current_balance_info(user_balance)
-    menu
-  end
-
-  def current_user_balance_hash(user_balance = {})
-    p database.accounts.keys
-    database.accounts.keys.each do |account|
-      current_id = database.accounts[account].fetch('user_id')
-      if current_id.eql? @user.user_id
-        currency = database.accounts[account]['currency']
-        user_balance[currency] ||= 0
-        user_balance[currency] += database.accounts[account]['balance']
-      end
-    end
-    user_balance
-  end
-
-  def deposit
-    amount   = ask_deposit_amount
-    currency = ask_currency
-    menu
-  end
-
-  def withdraw
-    amount   = ask_withdraw_amount
-    currency = ask_currency
-    atm.withdraw(amount, currency)
-    menu
-  end
-
-  def transfer
-    amount   = ask_amount
-    currency = ask_currency
-    menu
-  end
-
-  def logout
-    stream.print_output("#{@user.user_name}, Thank You For Using Our ATM. Good-Bye!")
-    login
-  end
-
-  def create_user_by_id(user_id)
-    @user = User.new(user_id, database.users[user_id]['name'], database.users[user_id]['password'])
-  end
-
-  def new_balance_info(balance = {})
-    if balance[:usd].nil?
-      stream.print_output("Your New Balance is #{balance[:uah]} UAH")
-    else
-      stream.print_output("Your New Balance is #{balance[:usd]} UAH, #{balance[:usd]} USD")
-    end
-  end
-
-  def current_balance_info(balance = {})
-    stream.print_output("Your Current Balance is #{balance[:uah]} UAH, #{balance[:usd]} USD")
   end
 end

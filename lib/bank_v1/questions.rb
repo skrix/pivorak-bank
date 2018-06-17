@@ -34,8 +34,8 @@ module Questions
   end
 
   def ask_currency
-    stream.print_output("Please select currency:\n
-    1. UAH\n
+    stream.print_output("Please select currency:\n\
+    1. UAH\n\
     2. USD\n")
     choose = stream.read_input.to_i
     case choose
