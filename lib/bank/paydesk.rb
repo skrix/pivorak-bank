@@ -21,7 +21,7 @@ class Paydesk
 
     used_bills = compose(bills_hash, amount_formatter(amount))
     return nil if used_bills.nil?
-    used_bills.each do |bill|
+    used_bills.keys.each do |bill|
       bills_hash[bill] -= used_bills[bill]
     end
     bills_hash
@@ -75,12 +75,12 @@ class Paydesk
   def bills_hash_keys_sort(bills_hash)
     # sorting hash keys in the order of growth
     # return an array with keys sorted from min to max
-    bills_hash.keys.map { |e| e.to_s.to_i }.sort
+    bills_hash.keys.sort
   end
 
   def max_bill_in_hash(bills_hash)
     # return max bill key from hash
-    :"#{bills_hash_keys_sort(bills_hash)[-1]}"
+    bills_hash_keys_sort(bills_hash)[-1]
   end
 
   def amount_formatter(amount)
