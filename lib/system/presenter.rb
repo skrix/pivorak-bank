@@ -10,6 +10,7 @@ require_relative '../bank/transfer'
 require_relative '../bank/withdrawal'
 require_relative '../bank/account'
 require_relative '../modules/questions'
+require_relative '../modules/errors_out'
 
 # presenter.rb
 class Presenter
@@ -21,6 +22,7 @@ class Presenter
     @database = BankDatabase.new(config)
     @atm      = CashDispenser.new
     @stream   = InputOutputHandler.new
+    @error    = ErrorsOut.new
   end
 
   def call
@@ -60,7 +62,7 @@ class Presenter
   end
 
   def create_user_by_id(user_id)
-    @user = User.new(user_id, database.config)
+    @user = User.new(user_id, database.users[user_id])
   end
 
   def deposit
@@ -77,7 +79,8 @@ class Presenter
 
       if user_owned && proper_currency
         database.deposits_update(Deposit.new(new_deposit_id, account_id, amount).to_h)
-        upd_info = Account.new(account_id, database['accounts'][account_id]).add_funds(amount)
+        upd_info = Account.new(account_id, database.accounts[account_id])
+        upd_info.add_funds(amount)
         database.accounts_update(upd_info.to_h)
         upd_bills = Hash[currency => { 1 => amount }]
         database.banknotes_update(upd_bills)
@@ -97,7 +100,7 @@ class Presenter
   def withdraw
     amount   = ask_withdraw_amount
     currency = ask_currency
-    stream.print_output(atm.withdraw(amount, currency))
+    make_withdraw(user.user_id, amount, currency)
     menu
   end
 
@@ -108,9 +111,14 @@ class Presenter
 
       if user_owned && proper_currency
         database.withdraws_update(Withdrawal.new(new_withdraw_id, account_id, amount).to_h)
-        upd_info = Account.new(account_id, database['accounts'][account_id]).sub_funds(amount)
+        upd_info = Account.new(account_id, database.accounts[account_id])
+        upd_info.sub_funds(amount)
         database.accounts_update(upd_info.to_h)
-        upd_bills = Paydesk.new(database.banknotes, amount)
+        upd_bills = Paydesk.new(database.banknotes[currency], amount).call
+        if upd_bills.nil?
+          error.composing_error
+          withdraw
+        end
         database.banknotes_update(upd_bills)
       end
     end
@@ -169,7 +177,7 @@ class Presenter
     menu
   end
 
-  def current_user_balance_hash
+  def current_user_balance_hash(user_balance = {})
     database.accounts.keys.each do |account|
       current_id = database.accounts[account].fetch('user_id')
 
@@ -183,10 +191,10 @@ class Presenter
   end
 
   def new_balance_info(balance = {})
-    stream.print_output("Your New Balance is #{balance[:usd]} UAH, #{balance[:usd]} USD")
+    stream.print_output("Your New Balance is #{balance['uah']} UAH, #{balance['usd']} USD")
   end
 
   def current_balance_info(balance = {})
-    stream.print_output("Your Current Balance is #{balance[:uah]} UAH, #{balance[:usd]} USD")
+    stream.print_output("Your Current Balance is #{balance['uah']} UAH, #{balance['usd']} USD")
   end
 end

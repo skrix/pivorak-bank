@@ -35,7 +35,7 @@ accounts:
     balance: 15578
     user_id: 3321
   124:
-    currency: :usd
+    currency: 'usd'
     balance: 143
     user_id: 3321
   136:

@@ -9,7 +9,7 @@ class User
 
   def initialize(user_id, database)
     @user_id    = user_id
-    @user_name  = database.fetch('users').fetch(user_id).fetch('name')
-    @password   = database.fetch('users').fetch(user_id).fetch('password')
+    @user_name  = database.fetch('name')
+    @password   = database.fetch('password')
   end
 end

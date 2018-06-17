@@ -10,9 +10,9 @@ class Account
 
   def initialize(account_id, options = {})
     @account_id = account_id
-    @currency   = options.fetch(:currency, :uah)
-    @balance    = options.fetch(:balance, 0)
-    @user_id    = options.fetch(:user_id)
+    @currency   = options.fetch('currency', 'uah')
+    @balance    = options.fetch('balance', 0)
+    @user_id    = options.fetch('user_id')
   end
 
   def sub_funds(amount)
