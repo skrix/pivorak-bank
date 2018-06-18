@@ -2,7 +2,6 @@
 
 require_relative 'io_handler'
 require_relative '../bank/bank_database'
-require_relative '../bank/cash_dispenser'
 require_relative '../bank/paydesk'
 require_relative '../bank/user'
 require_relative '../bank/deposit'
@@ -16,11 +15,10 @@ require_relative '../modules/errors_out'
 class Presenter
   include Questions
 
-  attr_accessor :database, :stream, :atm, :user, :error
+  attr_accessor :database, :stream, :user, :error
 
   def initialize(config = {})
     @database = BankDatabase.new(config)
-    @atm      = CashDispenser.new
     @stream   = InputOutputHandler.new
     @error    = ErrorsOut.new
   end
@@ -73,20 +71,15 @@ class Presenter
   end
 
   def make_deposit(user_id, amount, currency)
-    database.accounts.keys.each do |account_id|
-      user_owned = database.accounts[account_id]['user_id'].eql? user_id
-      proper_currency = database.accounts[account_id]['currency'].eql? currency
-
-      if user_owned && proper_currency
-        p database.banknotes[currency]
-        database.deposits_update(Deposit.new(new_deposit_id, account_id, amount).to_h)
-        upd_info = Account.new(account_id, database.accounts[account_id])
-        upd_info.add_funds(amount)
-        database.accounts_update(upd_info.to_h)
-        upd_bills = { 1 => amount }
-        database.banknotes_update(currency, upd_bills)
-      end
-      next
+    account_id = user_account(user_id, currency)
+    unless account_id.nil?
+      p database.banknotes[currency]
+      database.deposits_update(Deposit.new(new_deposit_id, account_id, amount).to_h)
+      upd_info = Account.new(account_id, database.accounts[account_id])
+      upd_info.add_funds(amount)
+      database.accounts_update(upd_info.to_h)
+      upd_bills = { 1 => amount }
+      database.banknotes_update(currency, upd_bills)
     end
     balance_after_transaction
   end
@@ -107,26 +100,19 @@ class Presenter
   end
 
   def make_withdraw(user_id, amount, currency)
-    database.accounts.keys.each do |account_id|
-      user_owned = database.accounts[account_id]['user_id'].eql? user_id
-      proper_currency = database.accounts[account_id]['currency'].eql? currency
-
-      if user_owned && proper_currency
-        p database.banknotes[currency]
-
-        upd_bills = Paydesk.new(database.banknotes[currency], amount).call
-        if upd_bills.nil?
-          stream.print_output(error.composing_error)
-          withdraw
-        else
-          database.withdraws_update(Withdrawal.new(new_withdraw_id, account_id, amount).to_h)
-          upd_info = Account.new(account_id, database.accounts[account_id])
-          upd_info.sub_funds(amount)
-          database.accounts_update(upd_info.to_h)
-          database.banknotes_update(currency, upd_bills)
-        end
+    account_id = user_account(user_id, currency)
+    unless account_id.nil?
+      p database.banknotes[currency]
+      upd_bills = Paydesk.new(database.banknotes[currency], amount).call
+      if upd_bills.nil?
+        stream.print_output(error.composing_error)
+        withdraw
       else
-        next
+        database.withdraws_update(Withdrawal.new(new_withdraw_id, account_id, amount).to_h)
+        upd_info = Account.new(account_id, database.accounts[account_id])
+        upd_info.sub_funds(amount)
+        database.accounts_update(upd_info.to_h)
+        database.banknotes_update(currency, upd_bills)
       end
     end
     balance_after_transaction
@@ -148,9 +134,7 @@ class Presenter
       stream.print_output(error.transfer_error)
       return
     end
-    target = user_account(target_user, currency)
-    source = user_account(user.user_id, currency)
-    make_transfer(target, source, amount)
+    make_transfer(user_account(target_user, currency), user_account(user.user_id, currency), amount)
     menu
   end
 
@@ -176,8 +160,7 @@ class Presenter
     source = Account.new(source_id, database.accounts.fetch(source_id))
     target.add_funds(amount)
     source.sub_funds(amount)
-    database.accounts_update(source.to_h)
-    database.accounts_update(target.to_h)
+    database.accounts_update(source.to_h.merge(target.to_h))
     balance_after_transaction
   end
 
@@ -222,7 +205,6 @@ class Presenter
   def current_user_balance_hash(user_balance = {})
     database.accounts.keys.each do |account|
       current_id = database.accounts[account].fetch('user_id')
-
       if current_id.eql? user.user_id
         currency = database.accounts[account]['currency']
         user_balance[currency] ||= 0

@@ -18,6 +18,7 @@ class Paydesk
     # call a compose function according to
     # data representation template string or hash
     return nil unless amount_formatter(amount)
+    return nil if bills_hash.nil? || bills_hash == {}
 
     used_bills = compose(bills_hash, amount_formatter(amount))
     return nil if used_bills.nil?
