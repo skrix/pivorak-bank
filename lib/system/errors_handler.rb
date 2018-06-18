@@ -1,0 +1,4 @@
+class ErrorsHandler
+
+  
+end

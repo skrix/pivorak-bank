@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require_relative './paydesk'
-require_relative './user'
-require_relative './deposit'
-require_relative './transfer'
-require_relative './withdrawal'
-require_relative './account'
+require_relative 'paydesk'
+require_relative 'user'
+require_relative 'deposit'
+require_relative 'transfer'
+require_relative 'withdrawal'
+require_relative 'account'
 
 class Service
   def initialize(database)

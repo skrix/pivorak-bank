@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'io_handler'
+require_relative 'errors_handler'
 require_relative '../modules/questions'
 require_relative '../modules/errors_out'
 
@@ -47,6 +48,7 @@ class Presenter
     amount   = ask_deposit_amount
     currency = ask_currency
     service.make_deposit(user.user_id, amount, currency)
+    new_balance_info(service.user_balance(user.user_id))
     menu
   end
 
@@ -54,6 +56,7 @@ class Presenter
     amount   = ask_withdraw_amount
     currency = ask_currency
     service.make_withdraw(user.user_id, amount, currency)
+    new_balance_info(service.user_balance(user.user_id))
     menu
   end
 
@@ -65,19 +68,14 @@ class Presenter
       stream.print_output(error.transfer_error)
       return
     end
-    service.make_transfer(service.user_account(target_user, currency), service.user_account(user.user_id, currency), amount)
+    service.make_transfer(service.user_account(target_user, currency),
+                          service.user_account(user.user_id, currency), amount)
+    new_balance_info(service.user_balance(user.user_id))
     menu
   end
 
   def show_balance
-    user_balance = current_user_balance_hash
-    current_balance_info(user_balance)
-    menu
-  end
-
-  def balance_after_transaction
-    user_balance = current_user_balance_hash
-    new_balance_info(user_balance)
+    current_balance_info(service.user_balance(user.user_id))
     menu
   end
 
@@ -108,10 +106,16 @@ class Presenter
   end
 
   def new_balance_info(balance = {})
-    stream.print_output("Your New Balance is #{balance['uah']} UAH, #{balance['usd']} USD")
+    string = ['Your New Balance is',
+              "#{balance.fetch('uah', 0)} UAH,",
+              "#{balance.fetch('usd', 0)} USD"].join(' ')
+    stream.print_output(string)
   end
 
   def current_balance_info(balance = {})
-    stream.print_output("Your Current Balance is #{balance['uah']} UAH, #{balance['usd']} USD")
+    string = ['Your Current Balance is',
+              "#{balance.fetch('uah', 0)} UAH,",
+              "#{balance.fetch('usd', 0)} USD"].join(' ')
+    stream.print_output(string)
   end
 end
