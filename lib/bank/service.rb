@@ -8,6 +8,8 @@ require_relative 'withdrawal'
 require_relative 'account'
 
 class Service
+  attr_accessor :database
+
   def initialize(database)
     @database = database
   end
@@ -61,7 +63,7 @@ class Service
   end
 
   def update_transfers(target_id, source_id, amount)
-    database.transfers_update(Transfer.new(target_id, source_id, amount).to_h)
+    database.transfers_update(Transfer.new(new_transfer_id, target_id, source_id, amount).to_h)
   end
 
   def update_cash(currency, bills)
@@ -78,7 +80,7 @@ class Service
   end
 
   def make_withdraw(user_id, amount, currency)
-    account_id = user_account(user_id, currency)
+    account_id = check_account(user_id, currency)
     return if account_id.nil?
     upd_bills = Paydesk.new(database.banknotes[currency], amount).call
     return nil if upd_bills.nil?
@@ -94,13 +96,17 @@ class Service
   end
 
   def user_balance(user_id, balance = {})
-    database.banknotes.keys.each_char do |currency|
+    database.banknotes.keys.each do |currency|
       account = check_account(user_id, currency)
       next if account.nil?
-      user_balance[currency] ||= 0
-      user_balance[currency] += database.accounts[account]['balance']
+      balance[currency] ||= 0
+      balance[currency] += database.accounts[account]['balance']
     end
     balance
+  end
+
+  def save(config)
+    database.update(config)
   end
 
   private

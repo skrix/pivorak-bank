@@ -15,11 +15,11 @@ class Transfer < Transaction
   attr_accessor :source_account, :target_account
   attr_accessor :transfer_id
 
-  def initialize(transfer_id, options = {})
-    super(options)
+  def initialize(transfer_id, target_account, source_account, amount)
+    super(amount)
     @transfer_id    = transfer_id
-    @source_account = options.fetch(:source_account)
-    @target_account = options.fetch(:target_account)
+    @source_account = source_account
+    @target_account = target_account
   end
 
   # TODO

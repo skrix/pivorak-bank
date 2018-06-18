@@ -1,3 +1,4 @@
+---
 banknotes:
   uah:
     500: 4
@@ -21,37 +22,37 @@ banknotes:
     1: 0
 users:
   3321:
-    name: 'Volodymyr'
-    password: 'mypass'
+    name: Volodymyr
+    password: mypass
   5922:
-    name: 'Iryna'
-    password: 'ho#ll_§1'
+    name: Iryna
+    password: ho#ll_§1
   6128:
-    name: 'Bohdan'
-    password: 'p1v0rakru1eZZ!'
+    name: Bohdan
+    password: p1v0rakru1eZZ!
 accounts:
   123:
-    currency: 'uah'
-    balance: 15578
+    currency: uah
+    balance: 14023
     user_id: 3321
   124:
-    currency: 'usd'
+    currency: usd
     balance: 143
     user_id: 3321
   136:
-    currency: 'uah'
-    balance: 2567
+    currency: uah
+    balance: 4122
     user_id: 5922
   137:
-    currency: 'usd'
+    currency: usd
     balance: 6531
     user_id: 5922
   156:
-    currency: 'uah'
+    currency: uah
     balance: 100
     user_id: 6128
   157:
-    currency: 'usd'
+    currency: usd
     balance: 0
     user_id: 6128
 deposits:
@@ -76,3 +77,7 @@ transfers:
     amount: 100
     source_account: 123
     target_account: 156
+  2:
+    amount: 1555
+    source_account: 123
+    target_account: 136

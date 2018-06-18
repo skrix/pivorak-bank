@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
+DB = './config.yml'
+
 require_relative 'io_handler'
-require_relative 'errors_handler'
 require_relative '../modules/questions'
 require_relative '../modules/errors_out'
 
@@ -63,13 +64,10 @@ class Presenter
   def transfer
     amount      = ask_amount
     currency    = ask_currency
-    target_user = service.check_receiver(ask_transfer_receiver)
-    if target_user.nil?
-      stream.print_output(error.transfer_error)
-      return
-    end
-    service.make_transfer(service.user_account(target_user, currency),
-                          service.user_account(user.user_id, currency), amount)
+    target_user = service.check_user_name(ask_transfer_receiver)
+    stream.print_output(error.transfer_error) && return if target_user.nil?
+    service.make_transfer(service.check_account(target_user, currency),
+                          service.check_account(user.user_id, currency), amount)
     new_balance_info(service.user_balance(user.user_id))
     menu
   end
@@ -81,6 +79,7 @@ class Presenter
 
   def logout
     stream.print_output("#{@user.user_name}, Thank You For Using Our ATM. Good-Bye!")
+    service.save(DB)
     login
   end
 
