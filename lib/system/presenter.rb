@@ -1,14 +1,6 @@
 # frozen_string_literal: true
 
 require_relative 'io_handler'
-require_relative '../bank/bank_database'
-require_relative '../bank/cash_dispenser'
-require_relative '../bank/paydesk'
-require_relative '../bank/user'
-require_relative '../bank/deposit'
-require_relative '../bank/transfer'
-require_relative '../bank/withdrawal'
-require_relative '../bank/account'
 require_relative '../modules/questions'
 require_relative '../modules/errors_out'
 
@@ -16,13 +8,12 @@ require_relative '../modules/errors_out'
 class Presenter
   include Questions
 
-  attr_accessor :database, :stream, :atm, :user, :error
+  attr_accessor :service, :stream, :user, :error
 
-  def initialize(config = {})
-    @database = BankDatabase.new(config)
-    @atm      = CashDispenser.new
-    @stream   = InputOutputHandler.new
-    @error    = ErrorsOut.new
+  def initialize(service)
+    @service = service
+    @stream  = InputOutputHandler.new
+    @error   = ErrorsOut.new
   end
 
   def call
@@ -32,17 +23,17 @@ class Presenter
   private
 
   def login
-    user_id = ask_id.to_i
-    if check_id_exist(user_id)
+    id = ask_id.to_i
+    if service.check_user_id(id)
       password = ask_password
-      check_password(user_id, password) ? login_succeed(user_id) : login_error(error.wrong_password)
+      service.check_password(id, password) ? login_succeed(id) : login_error(error.wrong_password)
     else
       login_error(error.id_does_not_exist)
     end
   end
 
   def login_succeed(user_id)
-    create_user_by_id(user_id)
+    @user = service.create_user(user_id)
     stream.print_output("Hello, #{@user.user_name}!")
     menu
   end
@@ -52,133 +43,42 @@ class Presenter
     login
   end
 
-  def check_id_exist(user_id)
-    database.users.fetch(user_id)
-  end
-
-  def check_password(user_id, password)
-    database.users[user_id].fetch('password')
-    database.users[user_id]['password'] == password
-  end
-
-  def create_user_by_id(user_id)
-    @user = User.new(user_id, database.users[user_id])
-  end
-
   def deposit
     amount   = ask_deposit_amount
     currency = ask_currency
-    make_deposit(user.user_id, amount, currency)
+    service.make_deposit(user.user_id, amount, currency)
     menu
-  end
-
-  def make_deposit(user_id, amount, currency)
-    database.accounts.keys.each do |account_id|
-      user_owned = database.accounts[account_id]['user_id'].eql? user_id
-      proper_currency = database.accounts[account_id]['currency'].eql? currency
-
-      if user_owned && proper_currency
-        p database.banknotes[currency]
-        database.deposits_update(Deposit.new(new_deposit_id, account_id, amount).to_h)
-        upd_info = Account.new(account_id, database.accounts[account_id])
-        upd_info.add_funds(amount)
-        database.accounts_update(upd_info.to_h)
-        upd_bills = { 1 => amount }
-        database.banknotes_update(currency, upd_bills)
-      end
-      next
-    end
-    balance_after_transaction
-  end
-
-  def new_deposit_id
-    if database.deposits.keys[-1].nil?
-      1
-    else
-      database.deposits.keys[-1] + 1
-    end
   end
 
   def withdraw
     amount   = ask_withdraw_amount
     currency = ask_currency
-    make_withdraw(user.user_id, amount, currency)
+    service.make_withdraw(user.user_id, amount, currency)
     menu
-  end
-
-  def make_withdraw(user_id, amount, currency)
-    database.accounts.keys.each do |account_id|
-      user_owned = database.accounts[account_id]['user_id'].eql? user_id
-      proper_currency = database.accounts[account_id]['currency'].eql? currency
-
-      if user_owned && proper_currency
-        p database.banknotes[currency]
-
-        upd_bills = Paydesk.new(database.banknotes[currency], amount).call
-        if upd_bills.nil?
-          stream.print_output(error.composing_error)
-          withdraw
-        else
-          database.withdraws_update(Withdrawal.new(new_withdraw_id, account_id, amount).to_h)
-          upd_info = Account.new(account_id, database.accounts[account_id])
-          upd_info.sub_funds(amount)
-          database.accounts_update(upd_info.to_h)
-          database.banknotes_update(currency, upd_bills)
-        end
-      else
-        next
-      end
-    end
-    balance_after_transaction
-  end
-
-  def new_withdraw_id
-    if database.withdraws.keys[-1].nil?
-      1
-    else
-      database.withdraws.keys[-1] + 1
-    end
   end
 
   def transfer
     amount      = ask_amount
     currency    = ask_currency
-    target_user = check_receiver(ask_transfer_receiver)
+    target_user = service.check_receiver(ask_transfer_receiver)
     if target_user.nil?
       stream.print_output(error.transfer_error)
       return
     end
-    target = user_account(target_user, currency)
-    source = user_account(user.user_id, currency)
-    make_transfer(target, source, amount)
+    service.make_transfer(service.user_account(target_user, currency), service.user_account(user.user_id, currency), amount)
     menu
   end
 
-  def check_receiver(user_name)
-    target_user_id = nil
-    database.users.keys.each do |id|
-      target_user_id = id if database.users[id]['name'] == user_name
-    end
-    target_user_id
+  def show_balance
+    user_balance = current_user_balance_hash
+    current_balance_info(user_balance)
+    menu
   end
 
-  def user_account(user_id, currency)
-    database.accounts.keys.each do |account|
-      correct_user     = database.accounts[account]['user_id']  == user_id
-      correct_currency = database.accounts[account]['currency'] == currency
-      return account if correct_user && correct_currency
-    end
-    nil
-  end
-
-  def make_transfer(target_id, source_id, amount)
-    target = Account.new(target_id, database.accounts.fetch(target_id))
-    source = Account.new(source_id, database.accounts.fetch(source_id))
-    target.add_funds(amount)
-    source.sub_funds(amount)
-    database.accounts_update(source.to_h)
-    database.accounts_update(target.to_h)
-    balance_after_transaction
+  def balance_after_transaction
+    user_balance = current_user_balance_hash
+    new_balance_info(user_balance)
+    menu
   end
 
   def logout
@@ -205,31 +105,6 @@ class Presenter
     when 4  then  transfer
     when 5  then  logout
     end
-  end
-
-  def show_balance
-    user_balance = current_user_balance_hash
-    current_balance_info(user_balance)
-    menu
-  end
-
-  def balance_after_transaction
-    user_balance = current_user_balance_hash
-    new_balance_info(user_balance)
-    menu
-  end
-
-  def current_user_balance_hash(user_balance = {})
-    database.accounts.keys.each do |account|
-      current_id = database.accounts[account].fetch('user_id')
-
-      if current_id.eql? user.user_id
-        currency = database.accounts[account]['currency']
-        user_balance[currency] ||= 0
-        user_balance[currency] += database.accounts[account]['balance']
-      end
-    end
-    user_balance
   end
 
   def new_balance_info(balance = {})
