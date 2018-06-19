@@ -13,7 +13,7 @@ require_relative 'transaction'
 class Withdrawal < Transaction
   attr_accessor :account_id, :withdrawal_id
 
-  def initialize(withdrawal_id, account_id, amount)
+  def initialize(withdrawal_id, account_id, amount = 0)
     super(amount)
     @withdrawal_id = withdrawal_id
     @account_id    = account_id

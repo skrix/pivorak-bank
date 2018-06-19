@@ -15,7 +15,7 @@ class Transfer < Transaction
   attr_accessor :source_account, :target_account
   attr_accessor :transfer_id
 
-  def initialize(transfer_id, target_account, source_account, amount)
+  def initialize(transfer_id, target_account, source_account, amount = 0)
     super(amount)
     @transfer_id    = transfer_id
     @source_account = source_account

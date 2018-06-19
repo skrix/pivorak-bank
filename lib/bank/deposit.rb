@@ -14,7 +14,7 @@ class Deposit < Transaction
   attr_accessor :amount, :account_id
   attr_accessor :deposit_id
 
-  def initialize(deposit_id, account_id, amount)
+  def initialize(deposit_id, account_id, amount = 0)
     super(amount)
     @deposit_id = deposit_id
     @account_id = account_id

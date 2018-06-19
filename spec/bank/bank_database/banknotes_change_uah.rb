@@ -8,12 +8,6 @@ describe BankDatabase do
   let!(:banknotes) do
     {
       'uah' => {
-        500 => 1000,
-        200 => 1000,
-        100 => 1000,
-        50  => 1000,
-        20  => 1000,
-        10  => 1000,
         5   => 1000,
         2   => 1000,
         1   => 1000
@@ -22,7 +16,7 @@ describe BankDatabase do
   end
   let!(:currency) { 'uah' }
 
-  it 'change information about banknotes in database with full hash' do
+  it 'change information about banknotes without full hash update uah' do
     db = described_class.new(config)
     db.banknotes_update(currency, banknotes.fetch(currency))
     config.fetch('banknotes').merge!(banknotes)
