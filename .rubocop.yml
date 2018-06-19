@@ -7,5 +7,6 @@ Style/Documentation:
 Metrics/LineLength:
   Max: 100
 
+# Set AbcSize for pass rubocop by method transfer
 Metrics/AbcSize:
   Max: 25
