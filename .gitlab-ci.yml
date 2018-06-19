@@ -1,0 +1,17 @@
+image: ruby:2.5
+
+stages:
+  - linter
+  - spec
+    
+rubocop:
+  stage: linter
+  script:
+    - gem install rubocop
+    - rubocop .
+    
+rspec:
+  stage: spec
+  script:
+    - gem install rspec
+    - rspec
