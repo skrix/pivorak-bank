@@ -42,34 +42,6 @@ class Service
     User.new(user_id, database.users[user_id])
   end
 
-  def update_account_add_funds(account_id, amount)
-    account = Account.new(account_id, database.accounts[account_id])
-    account.add_funds(amount)
-    database.accounts_update(account.to_h)
-  end
-
-  def update_account_sub_funds(account_id, amount)
-    account = Account.new(account_id, database.accounts[account_id])
-    account.sub_funds(amount)
-    database.accounts_update(account.to_h)
-  end
-
-  def update_withdraws(account_id, amount)
-    database.withdraws_update(Withdrawal.new(new_withdraw_id, account_id, amount).to_h)
-  end
-
-  def update_deposits(account_id, amount)
-    database.deposits_update(Deposit.new(new_deposit_id, account_id, amount).to_h)
-  end
-
-  def update_transfers(target_id, source_id, amount)
-    database.transfers_update(Transfer.new(new_transfer_id, target_id, source_id, amount).to_h)
-  end
-
-  def update_cash(currency, bills)
-    database.banknotes_update(currency, bills)
-  end
-
   def make_deposit(user_id, amount, currency)
     account_id = check_account(user_id, currency)
     return if account_id.nil?
@@ -124,5 +96,33 @@ class Service
   def new_transfer_id
     return 1 if database.transfers.keys[-1].nil?
     database.transfers.keys[-1] + 1
+  end
+
+  def update_withdraws(account_id, amount)
+    database.withdraws_update(Withdrawal.new(new_withdraw_id, account_id, amount).to_h)
+  end
+
+  def update_deposits(account_id, amount)
+    database.deposits_update(Deposit.new(new_deposit_id, account_id, amount).to_h)
+  end
+
+  def update_transfers(target_id, source_id, amount)
+    database.transfers_update(Transfer.new(new_transfer_id, target_id, source_id, amount).to_h)
+  end
+
+  def update_cash(currency, bills)
+    database.banknotes_update(currency, bills)
+  end
+
+  def update_account_add_funds(account_id, amount)
+    account = Account.new(account_id, database.accounts[account_id])
+    account.add_funds(amount)
+    database.accounts_update(account.to_h)
+  end
+
+  def update_account_sub_funds(account_id, amount)
+    account = Account.new(account_id, database.accounts[account_id])
+    account.sub_funds(amount)
+    database.accounts_update(account.to_h)
   end
 end
