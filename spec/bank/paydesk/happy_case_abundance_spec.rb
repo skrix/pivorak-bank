@@ -11,21 +11,22 @@ describe Paydesk do
       20 => 1000,
       10 => 1000,
       5 => 1000,
-      2 => 1000,
       1 => 1000
     }
   end
-
-  it 'returns expected hash' do
-    expect(described_class.new(bills_hash, 123_456).call).to eq(
+  let(:bills_result) do
+    {
       500 => 754,
       100 => 996,
       50 => 999,
       20 => 1000,
       10 => 1000,
       5 => 999,
-      2 => 1000,
       1 => 999
-    )
+    }
+  end
+
+  it 'returns expected hash' do
+    expect(described_class.new(bills_hash, 123_456).call).to eq(bills_result)
   end
 end
