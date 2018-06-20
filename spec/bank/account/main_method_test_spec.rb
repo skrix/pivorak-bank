@@ -13,15 +13,14 @@ describe Account do
       'user_id'  => 999
     }
   end
+  let(:account) { described_class.new(account_id, options) }
 
   it 'proper work of add_funds' do
-    account = described_class.new(account_id, options)
     account.add_funds(amount)
     expect(account.balance).to eq(options.fetch('balance') + amount)
   end
 
   it 'proper work of sub_funds' do
-    account = described_class.new(account_id, options)
     account.sub_funds(amount)
     expect(account.balance).to eq(options.fetch('balance') - amount)
   end

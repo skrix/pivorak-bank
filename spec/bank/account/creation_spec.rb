@@ -12,6 +12,11 @@ describe Account do
       'user_id'  => 999
     }
   end
+  let(:default) do
+    {
+      'user_id' => 999
+    }
+  end
 
   it 'created object have proper attributes' do
     account = described_class.new(account_id, options)
@@ -19,5 +24,11 @@ describe Account do
                                        currency: options.fetch('currency'),
                                        balance: options.fetch('balance'),
                                        user_id: options.fetch('user_id'))
+  end
+
+  it 'created object with attributes by default' do
+    account = described_class.new(account_id, default)
+    expect(account).to have_attributes(account_id: account_id, currency: 'uah',
+                                       balance: 0, user_id: options.fetch('user_id'))
   end
 end
