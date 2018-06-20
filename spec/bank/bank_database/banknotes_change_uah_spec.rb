@@ -4,7 +4,17 @@ require 'yaml'
 require './lib/bank/bank_database'
 
 describe BankDatabase do
-  let(:config) { YAML.load_file('./lib/config.yml') }
+  let(:config) do
+    {
+      'banknotes' => { 'uah' => { 500 => 90, 200 => 50, 5 => 189, 2 => 12, 1 => 0 } },
+      'users' => {},
+      'accounts' => {},
+      'deposits' => {},
+      'withdraws' => {},
+      'transfers' => {}
+    }
+  end
+  let(:bills) { config['banknotes'] }
   let(:banknotes) do
     {
       'uah' => {
@@ -18,8 +28,8 @@ describe BankDatabase do
 
   it 'change information about banknotes without full hash update uah' do
     db = described_class.new(config)
-    db.banknotes_update(currency, banknotes.fetch(currency))
-    config.fetch('banknotes').merge!(banknotes)
-    expect(db.banknotes).to eq(config.fetch('banknotes'))
+    db.banknotes_update(currency, bills.fetch(currency))
+    bills.merge!(banknotes)
+    expect(db.banknotes).to eq(bills)
   end
 end

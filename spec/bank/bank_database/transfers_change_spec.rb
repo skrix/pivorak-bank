@@ -4,7 +4,17 @@ require 'yaml'
 require './lib/bank/bank_database'
 
 describe BankDatabase do
-  let(:config) { YAML.load_file('./lib/config.yml') }
+  let(:config) do
+    {
+      'banknotes' => {},
+      'users' => {},
+      'accounts' => {},
+      'deposits' => {},
+      'withdraws' => {},
+      'transfers' => {}
+    }
+  end
+  let(:transfers) { config['transfers'] }
   let(:transfer) do
     {
       2 =>
@@ -19,7 +29,7 @@ describe BankDatabase do
   it 'add information about new transfer bank_database' do
     db = described_class.new(config)
     db.transfers_update(transfer)
-    config.fetch('transfers').merge!(transfer)
-    expect(db.transfers).to eq(config.fetch('transfers'))
+    transfers.merge!(transfer)
+    expect(db.transfers).to eq(transfers)
   end
 end

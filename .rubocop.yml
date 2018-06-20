@@ -10,3 +10,7 @@ Metrics/LineLength:
 # Set AbcSize for pass rubocop by method transfer
 Metrics/AbcSize:
   Max: 25
+
+# Set BlockLength for pass rubocop by some rspec tests
+Metrics/BlockLength:
+  Max: 30

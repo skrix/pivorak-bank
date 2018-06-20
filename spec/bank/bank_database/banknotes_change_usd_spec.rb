@@ -4,22 +4,32 @@ require 'yaml'
 require './lib/bank/bank_database'
 
 describe BankDatabase do
-  let(:config) { YAML.load_file('./lib/config.yml') }
+  let(:config) do
+    {
+      'banknotes' => { 'usd' => { 500 => 980, 200 => 50, 5 => 189, 2 => 12, 1 => 0 } },
+      'users' => {},
+      'accounts' => {},
+      'deposits' => {},
+      'withdraws' => {},
+      'transfers' => {}
+    }
+  end
+  let(:bills) { config['banknotes'] }
   let(:banknotes) do
     {
       'usd' => {
-        5   => 1000,
-        2   => 1000,
-        1   => 1000
+        5   => 544,
+        2   => 544,
+        1   => 544
       }
     }
   end
   let(:currency) { 'usd' }
 
-  it 'change information about banknotes without full hash update' do
+  it 'change information about banknotes without full hash update usd' do
     db = described_class.new(config)
     db.banknotes_update(currency, banknotes.fetch(currency))
-    config.fetch('banknotes').merge!(banknotes)
-    expect(db.banknotes).to eq(config.fetch('banknotes'))
+    bills.merge!(banknotes)
+    expect(db.banknotes).to eq(bills)
   end
 end

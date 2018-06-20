@@ -4,7 +4,20 @@ require 'yaml'
 require './lib/bank/bank_database'
 
 describe BankDatabase do
-  let(:config) { YAML.load_file('./lib/config.yml') }
+  let(:config) do
+    {
+      'banknotes' => {},
+      'users' => {},
+      'accounts' => {
+        123 => { 'currency' => 'uah', 'balance' => 139_66, 'user_id' => 3321 },
+        124 => { 'currency' => 'usd', 'balance' => 143, 'user_id' => 3321 }
+      },
+      'deposits' => {},
+      'withdraws' => {},
+      'transfers' => {}
+    }
+  end
+  let(:accounts) { config['accounts'] }
   let(:account) do
     {
       123 =>
@@ -19,7 +32,7 @@ describe BankDatabase do
   it 'change information about account bank_database' do
     db = described_class.new(config)
     db.accounts_update(account)
-    config.fetch('accounts').merge!(account)
-    expect(db.accounts).to eq(config.fetch('accounts'))
+    accounts.merge!(account)
+    expect(db.accounts).to eq(accounts)
   end
 end
