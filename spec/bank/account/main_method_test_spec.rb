@@ -4,9 +4,9 @@ require 'yaml'
 require './lib/bank/account'
 
 describe Account do
-  let!(:account_id) { 9999 }
-  let!(:amount) { 100 }
-  let!(:options) do
+  let(:account_id) { 9999 }
+  let(:amount) { 100 }
+  let(:options) do
     {
       'currency' => 'uah',
       'balance'  => 999_999,

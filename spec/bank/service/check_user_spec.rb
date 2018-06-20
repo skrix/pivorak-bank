@@ -7,13 +7,13 @@ require './lib/bank/service'
 require './lib/bank/bank_database'
 
 describe Service do
-  let!(:config)    { YAML.load_file(CONFIG) }
-  let!(:data)      { BankDatabase.new(config) }
-  let!(:user_id)   { 3321 }
-  let!(:user_name) { 'Volodymyr' }
-  let!(:user_pass) { 'mypass' }
-  let!(:currency)  { 'uah' }
-  let!(:source_id) { 123 }
+  let(:config)    { YAML.load_file(CONFIG) }
+  let(:data)      { BankDatabase.new(config) }
+  let(:user_id)   { 3321 }
+  let(:user_name) { 'Volodymyr' }
+  let(:user_pass) { 'mypass' }
+  let(:currency)  { 'uah' }
+  let(:source_id) { 123 }
 
   it 'check password' do
     check = described_class.new(data).check_password(user_id, user_pass)

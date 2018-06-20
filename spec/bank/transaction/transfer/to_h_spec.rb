@@ -4,12 +4,12 @@ require 'yaml'
 require './lib/bank/transfer'
 
 describe Transfer do
-  let!(:transfer_id) { 9999 }
-  let!(:amount) { 999_999 }
-  let!(:source) { 111 }
-  let!(:target) { 999 }
+  let(:transfer_id) { 9999 }
+  let(:amount) { 999_999 }
+  let(:source) { 111 }
+  let(:target) { 999 }
 
-  let!(:transfer) do
+  let(:transfer) do
     {
       transfer_id =>
       {

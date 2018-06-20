@@ -7,10 +7,10 @@ require './lib/bank/service'
 require './lib/bank/bank_database'
 
 describe Service do
-  let!(:config)    { YAML.load_file(CONFIG) }
-  let!(:data)      { BankDatabase.new(config) }
-  let!(:user_id)   { 3321 }
-  let!(:user_name) { 'Volodymyr' }
+  let(:config)    { YAML.load_file(CONFIG) }
+  let(:data)      { BankDatabase.new(config) }
+  let(:user_id)   { 3321 }
+  let(:user_name) { 'Volodymyr' }
 
   it 'check user_id' do
     service = described_class.new(data)

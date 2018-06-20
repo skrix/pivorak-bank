@@ -4,8 +4,8 @@ require 'yaml'
 require './lib/bank/bank_database'
 
 describe BankDatabase do
-  let!(:config) { YAML.load_file('./lib/config.yml') }
-  let!(:banknotes) do
+  let(:config) { YAML.load_file('./lib/config.yml') }
+  let(:banknotes) do
     {
       'usd' => {
         5   => 1000,
@@ -14,7 +14,7 @@ describe BankDatabase do
       }
     }
   end
-  let!(:currency) { 'usd' }
+  let(:currency) { 'usd' }
 
   it 'change information about banknotes without full hash update' do
     db = described_class.new(config)

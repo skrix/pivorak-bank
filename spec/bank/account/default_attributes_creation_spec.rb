@@ -4,8 +4,8 @@ require 'yaml'
 require './lib/bank/account'
 
 describe Account do
-  let!(:account_id) { 9999 }
-  let!(:options) do
+  let(:account_id) { 9999 }
+  let(:options) do
     {
       'user_id' => 999
     }

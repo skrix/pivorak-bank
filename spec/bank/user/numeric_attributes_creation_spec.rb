@@ -4,8 +4,8 @@ require 'yaml'
 require './lib/bank/user'
 
 describe User do
-  let!(:user_id) { 9999 }
-  let!(:options) do
+  let(:user_id) { 9999 }
+  let(:options) do
     {
       'name' => 968_987,
       'password' => 6465

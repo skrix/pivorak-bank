@@ -4,8 +4,8 @@ require 'yaml'
 require './lib/bank/bank_database'
 
 describe BankDatabase do
-  let!(:config) { YAML.load_file('./lib/config.yml') }
-  let!(:transfer) do
+  let(:config) { YAML.load_file('./lib/config.yml') }
+  let(:transfer) do
     {
       2 =>
       {

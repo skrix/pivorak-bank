@@ -3,7 +3,7 @@
 require './lib/bank/paydesk'
 
 describe Paydesk do
-  let!(:bills_hash) do
+  let(:bills_hash) do
     {
       500 => 1000,
       100 => 1000,

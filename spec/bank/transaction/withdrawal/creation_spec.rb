@@ -4,9 +4,9 @@ require 'yaml'
 require './lib/bank/withdrawal'
 
 describe Withdrawal do
-  let!(:withdraw_id) { 9999 }
-  let!(:amount) { 999_999 }
-  let!(:account_id) { 999 }
+  let(:withdraw_id) { 9999 }
+  let(:amount) { 999_999 }
+  let(:account_id) { 999 }
 
   it 'created object have proper attributes' do
     withdrawal = described_class.new(withdraw_id, account_id, amount)

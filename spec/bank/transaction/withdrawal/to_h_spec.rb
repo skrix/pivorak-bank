@@ -4,11 +4,11 @@ require 'yaml'
 require './lib/bank/withdrawal'
 
 describe Withdrawal do
-  let!(:withdraw_id) { 9999 }
-  let!(:amount) { 999_999 }
-  let!(:account_id) { 999 }
+  let(:withdraw_id) { 9999 }
+  let(:amount) { 999_999 }
+  let(:account_id) { 999 }
 
-  let!(:withdraw) do
+  let(:withdraw) do
     {
       withdraw_id =>
       {

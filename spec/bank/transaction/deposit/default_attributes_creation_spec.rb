@@ -4,8 +4,8 @@ require 'yaml'
 require './lib/bank/deposit'
 
 describe Deposit do
-  let!(:deposit_id) { 9999 }
-  let!(:account_id) { 999 }
+  let(:deposit_id) { 9999 }
+  let(:account_id) { 999 }
 
   it 'created object have proper attributes' do
     deposit = described_class.new(deposit_id, account_id)
