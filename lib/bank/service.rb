@@ -53,7 +53,7 @@ class Service
 
   def make_withdraw(user_id, amount, currency)
     account_id = check_account(user_id, currency)
-    return if account_id.nil?
+    return nil if account_id.nil?
     upd_bills = Paydesk.new(database.banknotes[currency], amount).call
     return nil if upd_bills.nil?
     update_withdraws(account_id, amount)

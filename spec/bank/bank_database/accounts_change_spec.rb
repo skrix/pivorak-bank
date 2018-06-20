@@ -9,7 +9,7 @@ describe BankDatabase do
     {
       123 =>
       {
-        'currency' => :uah,
+        'currency' => 'uah',
         'balance'  => 999_999_999,
         'user_id'  => 3321
       }

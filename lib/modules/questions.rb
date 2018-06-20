@@ -10,7 +10,7 @@ module Questions
 
   def ask_password
     stream.print_output('Enter Your Password:')
-    stream.read_input
+    stream.read_input.to_s
   end
 
   def ask_deposit_amount
@@ -25,7 +25,7 @@ module Questions
 
   def ask_transfer_receiver
     stream.print_output('Please enter receiver name:')
-    stream.read_input
+    stream.read_input.to_s
   end
 
   def ask_amount
@@ -34,8 +34,8 @@ module Questions
   end
 
   def ask_currency
-    stream.print_output("Please select currency:\n
-    1. UAH\n
+    stream.print_output("Please select currency:\
+    1. UAH\
     2. USD\n")
     choose = stream.read_input.to_i
     case choose

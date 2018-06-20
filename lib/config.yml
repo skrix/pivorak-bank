@@ -1,15 +1,15 @@
 ---
 banknotes:
   uah:
-    500: 4
-    200: 5
-    100: 12
-    50: 1
-    20: 2
-    10: 4
-    5: 1
+    500: 0
+    200: 0
+    100: 0
+    50: 0
+    20: 0
+    10: 0
+    5: 0
     2: 0
-    1: 2
+    1: 0
   usd:
     500: 0
     200: 0
@@ -33,7 +33,7 @@ users:
 accounts:
   123:
     currency: uah
-    balance: 14023
+    balance: 13966
     user_id: 3321
   124:
     currency: usd
@@ -41,7 +41,7 @@ accounts:
     user_id: 3321
   136:
     currency: uah
-    balance: 4122
+    balance: 4277
     user_id: 5922
   137:
     currency: usd
@@ -68,9 +68,27 @@ deposits:
   4:
     amount: 6531
     account_id: 137
+  5:
+    amount: 1555
+    account_id: 123
+  6:
+    amount: 99
+    account_id: 123
+  7:
+    amount: 99
+    account_id: 123
 withdraws:
   1:
     amount: 200
+    account_id: 123
+  2:
+    amount: 1655
+    account_id: 123
+  3:
+    amount: 99
+    account_id: 123
+  4:
+    amount: 99
     account_id: 123
 transfers:
   1:
@@ -81,3 +99,19 @@ transfers:
     amount: 1555
     source_account: 123
     target_account: 136
+  3:
+    amount: 155
+    source_account: 123
+    target_account: 136
+  4:
+    amount: 99
+    source_account: 123
+    target_account: 123
+  5:
+    amount: 99
+    source_account: 123
+    target_account: 123
+  5:
+    amount: 99
+    source_account: 123
+    target_account: 123
