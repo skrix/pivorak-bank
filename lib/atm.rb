@@ -3,9 +3,9 @@
 CONFIG = 'config.yml'
 
 require 'yaml'
-require './system/presenter'
-require './bank/bank_database'
-require './bank/service'
+require_relative 'system/presenter'
+require_relative 'bank/bank_database'
+require_relative 'bank/service'
 
 config   = YAML.load_file(ARGV.first || CONFIG)
 database = BankDatabase.new(config)
