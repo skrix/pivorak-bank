@@ -1,3 +1,10 @@
-*.gem
-*.rbc
-text_tmp.md
+# Ignore bundler config.
+.bundle
+
+# Ignore IDE and OS specific files
+.DS_Store
+.idea/**/*
+.vs
+
+# Ignore other specific files
+.env
