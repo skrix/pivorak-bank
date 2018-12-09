@@ -1,0 +1,187 @@
+---
+banknotes:
+  uah:
+    500: 99990
+    200: 99990
+    100: 99990
+    50: 99990
+    20: 99990
+    10: 99990
+    5: 99990
+    2: 99990
+    1: 999910
+  usd:
+    500: 99990
+    200: 99990
+    100: 99990
+    50: 99990
+    20: 99990
+    10: 99990
+    5: 99990
+    2: 99990
+    1: 999910
+users:
+  3321:
+    name: Volodymyr
+    password: mypass
+  5922:
+    name: Iryna
+    password: ho#ll_§1
+  6128:
+    name: Bohdan
+    password: p1v0rakru1eZZ!
+accounts:
+  123:
+    currency: uah
+    balance: 940010
+    user_id: 3321
+  124:
+    currency: usd
+    balance: 999
+    user_id: 3321
+  136:
+    currency: uah
+    balance: 70000
+    user_id: 5922
+  137:
+    currency: usd
+    balance: 6600
+    user_id: 5922
+  156:
+    currency: uah
+    balance: 7377
+    user_id: 6128
+  157:
+    currency: usd
+    balance: 0
+    user_id: 6128
+deposits:
+  1:
+    amount: 15878
+    account_id: 123
+  2:
+    amount: 143
+    account_id: 124
+  3:
+    amount: 2567
+    account_id: 136
+  4:
+    amount: 6531
+    account_id: 137
+  5:
+    amount: 1555
+    account_id: 123
+  6:
+    amount: 99
+    account_id: 123
+  7:
+    amount: 99
+    account_id: 123
+  8:
+    amount: 500
+    account_id: 124
+  9:
+    amount: 33
+    account_id: 123
+  10:
+    amount: 357
+    account_id: 124
+  11:
+    amount: 31
+    account_id: 137
+  12:
+    amount: 52
+    account_id: 137
+  13:
+    amount: 99999
+    account_id: 123
+  14:
+    amount: 2
+    account_id: 123
+  15:
+    amount: 899000
+    account_id: 123
+  16:
+    amount: 13
+    account_id: 123
+  17:
+    amount: 10
+    account_id: 123
+  18:
+    amount: 11
+    account_id: 123
+withdraws:
+  1:
+    amount: 200
+    account_id: 123
+  2:
+    amount: 1655
+    account_id: 123
+  3:
+    amount: 99
+    account_id: 123
+  4:
+    amount: 99
+    account_id: 123
+  5:
+    amount: 1
+    account_id: 124
+  6:
+    amount: 10
+    account_id: 137
+  7:
+    amount: 4
+    account_id: 137
+  8:
+    amount: 1
+    account_id: 123
+  9:
+    amount: 12
+    account_id: 123
+  10:
+    amount: 10
+    account_id: 123
+  11:
+    amount: 1
+    account_id: 123
+transfers:
+  1:
+    amount: 100
+    source_account: 123
+    target_account: 156
+  2:
+    amount: 1555
+    source_account: 123
+    target_account: 136
+  3:
+    amount: 155
+    source_account: 123
+    target_account: 136
+  4:
+    amount: 99
+    source_account: 123
+    target_account: 123
+  5:
+    amount: 99
+    source_account: 123
+    target_account: 123
+  6:
+    amount: 13000
+    target_account: 123
+    source_account: 136
+  7:
+    amount: 7277
+    target_account: 136
+    source_account: 156
+  8:
+    amount: 0
+    source_account: 124
+    target_account: 137
+  9:
+    amount: 10000
+    source_account: 123
+    target_account: 136
+  10:
+    amount: 50000
+    source_account: 123
+    target_account: 136
